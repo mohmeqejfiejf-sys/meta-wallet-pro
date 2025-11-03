@@ -111,7 +111,7 @@ const Transfer = () => {
       
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
-          <Card>
+          <Card className="border-border">
             <CardHeader>
               <CardTitle className="text-2xl">Send Money</CardTitle>
               <CardDescription>
@@ -119,7 +119,7 @@ const Transfer = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="mb-6 p-4 rounded-lg bg-muted">
+              <div className="mb-6 p-4 rounded-xl bg-card border border-border">
                 <p className="text-sm text-muted-foreground">Available Balance</p>
                 <p className="text-3xl font-bold">${balance.toFixed(2)}</p>
               </div>

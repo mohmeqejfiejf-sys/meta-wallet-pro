@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import logo from "@/assets/meta-wallet-logo.png";
+import logo from "@/assets/meta-wallet-logo-dark.png";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -96,15 +96,15 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/20 via-background to-secondary/20 p-4">
-      <Card className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <Card className="w-full max-w-md border-border">
         <CardHeader className="text-center space-y-4">
           <div className="flex justify-center">
             <img src={logo} alt="Meta Wallet" className="w-20 h-20" />
           </div>
           <CardTitle className="text-3xl font-bold">Meta Wallet</CardTitle>
           <CardDescription>
-            Your secure digital wallet platform
+            Secure digital payments platform
           </CardDescription>
         </CardHeader>
         <CardContent>

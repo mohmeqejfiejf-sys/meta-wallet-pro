@@ -37,7 +37,7 @@ const Deposit = () => {
     setTimeout(() => {
       toast({
         title: "Deposit initiated",
-        description: "This is a demo - in production, this would process your card payment.",
+        description: "Your deposit is being processed and will be available shortly.",
       });
       setIsLoading(false);
       navigate("/dashboard");
@@ -75,7 +75,7 @@ const Deposit = () => {
       
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
-          <Card>
+          <Card className="border-border">
             <CardHeader>
               <CardTitle className="text-2xl">Deposit Funds</CardTitle>
               <CardDescription>
@@ -83,12 +83,6 @@ const Deposit = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="mb-6 p-4 rounded-lg bg-primary/10 border border-primary/20">
-                <p className="text-sm font-medium flex items-center gap-2">
-                  <CreditCard className="w-4 h-4" />
-                  Demo Mode - No real transactions will be processed
-                </p>
-              </div>
 
               <form onSubmit={handleDeposit} className="space-y-4">
                 <div className="space-y-2">

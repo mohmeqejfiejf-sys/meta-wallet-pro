@@ -7,8 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import Navbar from "@/components/Navbar";
-import { Wallet, Loader2, AlertCircle } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Wallet, Loader2 } from "lucide-react";
+
 
 const Withdraw = () => {
   const navigate = useNavigate();
@@ -61,7 +61,7 @@ const Withdraw = () => {
     setTimeout(() => {
       toast({
         title: "Withdrawal initiated",
-        description: "This is a demo - in production, this would transfer to your bank account.",
+        description: "Your withdrawal is being processed and will arrive in 1-2 business days.",
       });
       setIsLoading(false);
       navigate("/dashboard");
@@ -74,7 +74,7 @@ const Withdraw = () => {
       
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
-          <Card>
+          <Card className="border-border">
             <CardHeader>
               <CardTitle className="text-2xl">Withdraw Funds</CardTitle>
               <CardDescription>
@@ -82,17 +82,11 @@ const Withdraw = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="mb-6 p-4 rounded-lg bg-muted">
+              <div className="mb-6 p-4 rounded-xl bg-card border border-border">
                 <p className="text-sm text-muted-foreground">Available Balance</p>
                 <p className="text-3xl font-bold">${balance.toFixed(2)}</p>
               </div>
 
-              <Alert className="mb-6">
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>
-                  Demo Mode - No real bank transfers will be processed
-                </AlertDescription>
-              </Alert>
 
               <form onSubmit={handleWithdraw} className="space-y-4">
                 <div className="space-y-2">

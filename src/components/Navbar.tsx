@@ -2,8 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import logo from "@/assets/meta-wallet-logo.png";
-import { LogOut, Wallet, ArrowLeftRight, Download, Upload } from "lucide-react";
+import logo from "@/assets/meta-wallet-logo-dark.png";
+import { LogOut, LayoutDashboard, Send, Download, Upload } from "lucide-react";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="border-b bg-card">
+    <nav className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate("/dashboard")}>
@@ -27,26 +27,26 @@ const Navbar = () => {
             <span className="font-bold text-xl">Meta Wallet</span>
           </div>
           
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")}>
-              <Wallet className="w-4 h-4 mr-2" />
-              Dashboard
+              <LayoutDashboard className="w-4 h-4 mr-2" />
+              Home
             </Button>
             <Button variant="ghost" size="sm" onClick={() => navigate("/transfer")}>
-              <ArrowLeftRight className="w-4 h-4 mr-2" />
-              Transfer
+              <Send className="w-4 h-4 mr-2" />
+              Send
             </Button>
             <Button variant="ghost" size="sm" onClick={() => navigate("/deposit")}>
               <Download className="w-4 h-4 mr-2" />
-              Deposit
+              Add
             </Button>
             <Button variant="ghost" size="sm" onClick={() => navigate("/withdraw")}>
               <Upload className="w-4 h-4 mr-2" />
               Withdraw
             </Button>
-            <Button variant="outline" size="sm" onClick={handleSignOut}>
+            <Button variant="ghost" size="sm" onClick={handleSignOut}>
               <LogOut className="w-4 h-4 mr-2" />
-              Sign Out
+              Exit
             </Button>
           </div>
         </div>

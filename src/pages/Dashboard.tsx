@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import Navbar from "@/components/Navbar";
 import { User } from "@supabase/supabase-js";
 import { Skeleton } from "@/components/ui/skeleton";
-import { DollarSign, ArrowUpRight, ArrowDownLeft, Clock, ArrowLeftRight } from "lucide-react";
+import { ArrowUpRight, ArrowDownLeft, Clock, Plus, Send, Download, Upload, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 interface Wallet {
@@ -134,116 +133,126 @@ const Dashboard = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       
-      <main className="container mx-auto px-4 py-8">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
-          <Card className="col-span-full lg:col-span-2">
-            <CardHeader>
-              <CardTitle className="text-2xl">Wallet Balance</CardTitle>
-              <CardDescription>Your current available balance</CardDescription>
-            </CardHeader>
-            <CardContent>
-              {loading ? (
-                <Skeleton className="h-16 w-48" />
-              ) : (
-                <div className="flex items-center gap-2">
-                  <DollarSign className="w-8 h-8 text-primary" />
-                  <span className="text-5xl font-bold">
-                    {wallet?.balance.toLocaleString('en-US', {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    })}
-                  </span>
-                  <span className="text-2xl text-muted-foreground">{wallet?.currency}</span>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <button
-                onClick={() => navigate("/transfer")}
-                className="w-full p-3 text-left rounded-lg border hover:bg-accent transition-colors"
-              >
-                <div className="flex items-center gap-2">
-                  <ArrowLeftRight className="w-5 h-5 text-primary" />
-                  <span className="font-medium">Send Money</span>
-                </div>
-              </button>
-              <button
-                onClick={() => navigate("/deposit")}
-                className="w-full p-3 text-left rounded-lg border hover:bg-accent transition-colors"
-              >
-                <div className="flex items-center gap-2">
-                  <ArrowDownLeft className="w-5 h-5 text-green-500" />
-                  <span className="font-medium">Deposit Funds</span>
-                </div>
-              </button>
-              <button
-                onClick={() => navigate("/withdraw")}
-                className="w-full p-3 text-left rounded-lg border hover:bg-accent transition-colors"
-              >
-                <div className="flex items-center gap-2">
-                  <ArrowUpRight className="w-5 h-5 text-red-500" />
-                  <span className="font-medium">Withdraw</span>
-                </div>
-              </button>
-            </CardContent>
-          </Card>
+      <main className="container mx-auto px-4 py-6 max-w-4xl">
+        {/* Balance Section */}
+        <div className="mb-8">
+          {loading ? (
+            <Skeleton className="h-20 w-full" />
+          ) : (
+            <div className="text-center py-6">
+              <p className="text-sm text-muted-foreground mb-2">Total Balance</p>
+              <h1 className="text-5xl font-bold mb-1">
+                ${wallet?.balance.toLocaleString('en-US', {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </h1>
+              <div className="flex items-center justify-center gap-2 text-sm">
+                <TrendingUp className="w-4 h-4 text-green-500" />
+                <span className="text-green-500">+2.5%</span>
+                <span className="text-muted-foreground">this month</span>
+              </div>
+            </div>
+          )}
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Transactions</CardTitle>
-            <CardDescription>Your latest transaction history</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {loading ? (
-              <div className="space-y-4">
-                {[1, 2, 3].map(i => <Skeleton key={i} className="h-16 w-full" />)}
-              </div>
-            ) : transactions.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <Clock className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                <p>No transactions yet</p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {transactions.map((tx) => {
-                  const isOutgoing = tx.from_user_id === user?.id;
-                  const otherUserId = isOutgoing ? tx.to_user_id : tx.from_user_id;
-                  const otherUser = otherUserId ? profiles[otherUserId] : null;
-                  
-                  return (
-                    <div key={tx.id} className="flex items-center justify-between p-4 rounded-lg border">
-                      <div className="flex items-center gap-3">
+        {/* Quick Actions */}
+        <div className="flex gap-4 justify-center mb-8">
+          <button
+            onClick={() => navigate("/deposit")}
+            className="flex flex-col items-center gap-2"
+          >
+            <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center hover:opacity-80 transition-opacity">
+              <Plus className="w-7 h-7 text-primary-foreground" />
+            </div>
+            <span className="text-sm font-medium">Add</span>
+          </button>
+          
+          <button
+            onClick={() => navigate("/transfer")}
+            className="flex flex-col items-center gap-2"
+          >
+            <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center hover:opacity-80 transition-opacity">
+              <Send className="w-7 h-7 text-primary-foreground" />
+            </div>
+            <span className="text-sm font-medium">Send</span>
+          </button>
+          
+          <button
+            onClick={() => navigate("/deposit")}
+            className="flex flex-col items-center gap-2"
+          >
+            <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center hover:opacity-80 transition-opacity">
+              <Download className="w-7 h-7 text-primary-foreground" />
+            </div>
+            <span className="text-sm font-medium">Receive</span>
+          </button>
+          
+          <button
+            onClick={() => navigate("/withdraw")}
+            className="flex flex-col items-center gap-2"
+          >
+            <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center hover:opacity-80 transition-opacity">
+              <Upload className="w-7 h-7 text-primary-foreground" />
+            </div>
+            <span className="text-sm font-medium">Withdraw</span>
+          </button>
+        </div>
+
+        {/* Transactions Section */}
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold">Transactions</h2>
+          </div>
+          
+          {loading ? (
+            <div className="space-y-3">
+              {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-20 w-full rounded-xl" />)}
+            </div>
+          ) : transactions.length === 0 ? (
+            <div className="text-center py-12 bg-card rounded-xl">
+              <Clock className="w-16 h-16 mx-auto mb-4 opacity-30" />
+              <p className="text-muted-foreground">No transactions yet</p>
+              <p className="text-sm text-muted-foreground mt-1">Start by adding funds or sending money</p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {transactions.map((tx) => {
+                const isOutgoing = tx.from_user_id === user?.id;
+                const otherUserId = isOutgoing ? tx.to_user_id : tx.from_user_id;
+                const otherUser = otherUserId ? profiles[otherUserId] : null;
+                
+                return (
+                  <div key={tx.id} className="flex items-center justify-between p-4 bg-card rounded-xl hover:bg-accent/50 transition-colors">
+                    <div className="flex items-center gap-4">
+                      <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                        tx.transaction_type === 'deposit' ? 'bg-green-500/20' :
+                        tx.transaction_type === 'withdrawal' ? 'bg-red-500/20' :
+                        isOutgoing ? 'bg-orange-500/20' : 'bg-green-500/20'
+                      }`}>
                         {getTransactionIcon(tx.transaction_type, isOutgoing)}
-                        <div>
-                          <p className="font-medium">{tx.description}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {otherUser ? `${otherUser.full_name || otherUser.email}` : 'Unknown'}
-                          </p>
-                          <p className="text-xs text-muted-foreground">{formatDate(tx.created_at)}</p>
-                        </div>
                       </div>
-                      <div className="text-right">
-                        <p className={`text-lg font-semibold ${isOutgoing ? 'text-red-500' : 'text-green-500'}`}>
-                          {isOutgoing ? '-' : '+'} ${tx.amount.toFixed(2)}
+                      <div>
+                        <p className="font-medium text-sm">{tx.description}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {formatDate(tx.created_at)}
                         </p>
-                        <Badge variant={tx.status === 'completed' ? 'default' : 'secondary'}>
-                          {tx.status}
-                        </Badge>
                       </div>
                     </div>
-                  );
-                })}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                    <div className="text-right">
+                      <p className={`text-base font-bold ${isOutgoing ? 'text-foreground' : 'text-foreground'}`}>
+                        {isOutgoing ? '-' : '+'} ${tx.amount.toFixed(2)}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {tx.status === 'completed' ? 'Completed' : tx.status}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
       </main>
     </div>
   );
