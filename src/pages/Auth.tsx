@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import logo from "@/assets/meta-wallet-logo-dark.png";
+import logo from "@/assets/meta-wallet-logo.png";
 
 const Auth = () => {
   const navigate = useNavigate();

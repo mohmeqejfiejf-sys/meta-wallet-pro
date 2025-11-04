@@ -2,8 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import logo from "@/assets/meta-wallet-logo-dark.png";
-import { LogOut, LayoutDashboard, Send, Download, Upload } from "lucide-react";
+import logo from "@/assets/meta-wallet-logo.png";
+import { LogOut, LayoutDashboard, Send, Download, Upload, ShoppingCart } from "lucide-react";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -43,6 +43,10 @@ const Navbar = () => {
             <Button variant="ghost" size="sm" onClick={() => navigate("/withdraw")}>
               <Upload className="w-4 h-4 mr-2" />
               Withdraw
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => navigate("/buy")}>
+              <ShoppingCart className="w-4 h-4 mr-2" />
+              Buy
             </Button>
             <Button variant="ghost" size="sm" onClick={handleSignOut}>
               <LogOut className="w-4 h-4 mr-2" />

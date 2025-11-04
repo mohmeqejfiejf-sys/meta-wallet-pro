@@ -4,7 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import { User } from "@supabase/supabase-js";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowUpRight, ArrowDownLeft, Clock, Plus, Send, Download, Upload, TrendingUp } from "lucide-react";
+import { ArrowUpRight, ArrowDownLeft, Clock, Plus, Send, Download, Upload, TrendingUp, ShoppingCart } from "lucide-react";
+import ReceiveDialog from "@/components/ReceiveDialog";
 import { Badge } from "@/components/ui/badge";
 
 interface Wallet {
@@ -35,6 +36,7 @@ const Dashboard = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [profiles, setProfiles] = useState<{ [key: string]: Profile }>({});
   const [loading, setLoading] = useState(true);
+  const [receiveDialogOpen, setReceiveDialogOpen] = useState(false);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -179,7 +181,7 @@ const Dashboard = () => {
           </button>
           
           <button
-            onClick={() => navigate("/deposit")}
+            onClick={() => setReceiveDialogOpen(true)}
             className="flex flex-col items-center gap-2"
           >
             <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center hover:opacity-80 transition-opacity">
@@ -189,13 +191,13 @@ const Dashboard = () => {
           </button>
           
           <button
-            onClick={() => navigate("/withdraw")}
+            onClick={() => navigate("/buy")}
             className="flex flex-col items-center gap-2"
           >
             <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center hover:opacity-80 transition-opacity">
-              <Upload className="w-7 h-7 text-primary-foreground" />
+              <ShoppingCart className="w-7 h-7 text-primary-foreground" />
             </div>
-            <span className="text-sm font-medium">Withdraw</span>
+            <span className="text-sm font-medium">Buy</span>
           </button>
         </div>
 
@@ -254,6 +256,8 @@ const Dashboard = () => {
           )}
         </div>
       </main>
+      
+      <ReceiveDialog open={receiveDialogOpen} onOpenChange={setReceiveDialogOpen} />
     </div>
   );
 };

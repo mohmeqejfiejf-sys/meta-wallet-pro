@@ -167,6 +167,10 @@ const Deposit = () => {
                     </>
                   )}
                 </Button>
+                
+                <p className="text-xs text-muted-foreground text-center pt-2">
+                  This is a simulated deposit. No real money will be added.
+                </p>
               </form>
             </CardContent>
           </Card>

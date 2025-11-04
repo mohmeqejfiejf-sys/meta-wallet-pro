@@ -16,9 +16,10 @@ const Withdraw = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [amount, setAmount] = useState("");
   const [balance, setBalance] = useState(0);
-  const [bankAccount, setBankAccount] = useState("");
-  const [routingNumber, setRoutingNumber] = useState("");
-  const [accountName, setAccountName] = useState("");
+  const [cardNumber, setCardNumber] = useState("");
+  const [cardName, setCardName] = useState("");
+  const [expiryDate, setExpiryDate] = useState("");
+  const [cvv, setCvv] = useState("");
 
   useEffect(() => {
     const checkUser = async () => {
@@ -107,45 +108,71 @@ const Withdraw = () => {
                 <div className="space-y-4 pt-4 border-t">
                   <h3 className="font-medium flex items-center gap-2">
                     <Wallet className="w-4 h-4" />
-                    Bank Account Details
+                    Card Details
                   </h3>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="account-name">Account Holder Name</Label>
+                    <Label htmlFor="card-name">Cardholder Name</Label>
                     <Input
-                      id="account-name"
+                      id="card-name"
                       type="text"
-                      placeholder="John Doe"
-                      value={accountName}
-                      onChange={(e) => setAccountName(e.target.value)}
+                      placeholder="JOHN DOE"
+                      value={cardName}
+                      onChange={(e) => setCardName(e.target.value.toUpperCase())}
                       required
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="bank-account">Account Number</Label>
+                    <Label htmlFor="card-number">Card Number</Label>
                     <Input
-                      id="bank-account"
+                      id="card-number"
                       type="text"
-                      placeholder="1234567890"
-                      value={bankAccount}
-                      onChange={(e) => setBankAccount(e.target.value.replace(/\D/g, ''))}
-                      maxLength={17}
+                      placeholder="1234 5678 9012 3456"
+                      value={cardNumber}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/\D/g, '');
+                        const formatted = value.replace(/(\d{4})/g, '$1 ').trim();
+                        setCardNumber(formatted);
+                      }}
+                      maxLength={19}
                       required
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="routing">Routing Number</Label>
-                    <Input
-                      id="routing"
-                      type="text"
-                      placeholder="123456789"
-                      value={routingNumber}
-                      onChange={(e) => setRoutingNumber(e.target.value.replace(/\D/g, ''))}
-                      maxLength={9}
-                      required
-                    />
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="expiry">Expiry Date</Label>
+                      <Input
+                        id="expiry"
+                        type="text"
+                        placeholder="MM/YY"
+                        value={expiryDate}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, '');
+                          if (value.length <= 2) {
+                            setExpiryDate(value);
+                          } else {
+                            setExpiryDate(value.slice(0, 2) + '/' + value.slice(2, 4));
+                          }
+                        }}
+                        maxLength={5}
+                        required
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="cvv">CVV</Label>
+                      <Input
+                        id="cvv"
+                        type="text"
+                        placeholder="123"
+                        value={cvv}
+                        onChange={(e) => setCvv(e.target.value.replace(/\D/g, ''))}
+                        maxLength={3}
+                        required
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -161,6 +188,10 @@ const Withdraw = () => {
                     </>
                   )}
                 </Button>
+                
+                <p className="text-xs text-muted-foreground text-center pt-2">
+                  This is a simulated withdrawal. No real money will be transferred.
+                </p>
               </form>
             </CardContent>
           </Card>

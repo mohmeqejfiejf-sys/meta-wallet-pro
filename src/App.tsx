@@ -9,6 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import Transfer from "./pages/Transfer";
 import Deposit from "./pages/Deposit";
 import Withdraw from "./pages/Withdraw";
+import Buy from "./pages/Buy";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/transfer" element={<Transfer />} />
           <Route path="/deposit" element={<Deposit />} />
           <Route path="/withdraw" element={<Withdraw />} />
+          <Route path="/buy" element={<Buy />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
