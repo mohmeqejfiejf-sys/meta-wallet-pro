@@ -179,10 +179,6 @@ const Transfer = () => {
                     </>
                   )}
                 </Button>
-                
-                <p className="text-xs text-muted-foreground text-center pt-2">
-                  This is a simulated transfer within the MetaWallet system only.
-                </p>
               </form>
             </CardContent>
           </Card>

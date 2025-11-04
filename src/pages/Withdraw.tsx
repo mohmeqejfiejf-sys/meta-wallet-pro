@@ -188,10 +188,6 @@ const Withdraw = () => {
                     </>
                   )}
                 </Button>
-                
-                <p className="text-xs text-muted-foreground text-center pt-2">
-                  This is a simulated withdrawal. No real money will be transferred.
-                </p>
               </form>
             </CardContent>
           </Card>

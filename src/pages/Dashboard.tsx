@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import { User } from "@supabase/supabase-js";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowUpRight, ArrowDownLeft, Clock, Plus, Send, Download, Upload, TrendingUp, ShoppingCart } from "lucide-react";
+import { ArrowUpRight, ArrowDownLeft, Clock, Plus, Send, Download, Upload, TrendingUp } from "lucide-react";
 import ReceiveDialog from "@/components/ReceiveDialog";
 import { Badge } from "@/components/ui/badge";
 
@@ -188,16 +188,6 @@ const Dashboard = () => {
               <Download className="w-7 h-7 text-primary-foreground" />
             </div>
             <span className="text-sm font-medium">Receive</span>
-          </button>
-          
-          <button
-            onClick={() => navigate("/buy")}
-            className="flex flex-col items-center gap-2"
-          >
-            <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center hover:opacity-80 transition-opacity">
-              <ShoppingCart className="w-7 h-7 text-primary-foreground" />
-            </div>
-            <span className="text-sm font-medium">Buy</span>
           </button>
         </div>
 
