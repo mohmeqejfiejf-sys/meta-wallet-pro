@@ -123,7 +123,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      transfer_funds_atomic: {
+        Args: {
+          recipient_email: string
+          sender_id: string
+          transfer_amount: number
+          transfer_description?: string
+        }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never
