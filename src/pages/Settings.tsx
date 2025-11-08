@@ -16,6 +16,7 @@ const Settings = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
   const [fullName, setFullName] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -83,6 +84,15 @@ const Settings = () => {
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!currentPassword) {
+      toast({
+        title: "خطأ",
+        description: "يرجى إدخال كلمة المرور الحالية",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     if (newPassword !== confirmPassword) {
       toast({
         title: "خطأ",
@@ -104,6 +114,17 @@ const Settings = () => {
     setLoading(true);
 
     try {
+      // First verify current password
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: user?.email || "",
+        password: currentPassword,
+      });
+
+      if (signInError) {
+        throw new Error("كلمة المرور الحالية غير صحيحة");
+      }
+
+      // If verification successful, update password
       const { error } = await supabase.auth.updateUser({
         password: newPassword
       });
@@ -115,6 +136,7 @@ const Settings = () => {
         description: "تم تغيير كلمة المرور بنجاح",
       });
       
+      setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     } catch (error: any) {
@@ -187,11 +209,23 @@ const Settings = () => {
                 تغيير كلمة المرور
               </CardTitle>
               <CardDescription>
-                تحديث كلمة مرور حسابك (لا حاجة لكلمة المرور القديمة)
+                تحديث كلمة مرور حسابك بشكل آمن
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleChangePassword} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="currentPassword">كلمة المرور الحالية</Label>
+                  <Input
+                    id="currentPassword"
+                    type="password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    placeholder="أدخل كلمة المرور الحالية"
+                    required
+                  />
+                </div>
+                
                 <div className="space-y-2">
                   <Label htmlFor="newPassword">كلمة المرور الجديدة</Label>
                   <Input
@@ -200,6 +234,7 @@ const Settings = () => {
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     placeholder="أدخل كلمة المرور الجديدة"
+                    required
                   />
                 </div>
                 
@@ -211,6 +246,7 @@ const Settings = () => {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="أعد إدخال كلمة المرور"
+                    required
                   />
                 </div>
                 

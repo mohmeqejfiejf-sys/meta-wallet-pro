@@ -79,7 +79,7 @@ const Withdraw = () => {
             <CardHeader>
               <CardTitle className="text-2xl">Withdraw Funds</CardTitle>
               <CardDescription>
-                Transfer money from your wallet to your bank account
+                ⚠️ DEMO ONLY - This is a placeholder feature. No actual withdrawal processing occurs.
               </CardDescription>
             </CardHeader>
             <CardContent>

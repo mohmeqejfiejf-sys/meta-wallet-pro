@@ -79,7 +79,7 @@ const Deposit = () => {
             <CardHeader>
               <CardTitle className="text-2xl">Deposit Funds</CardTitle>
               <CardDescription>
-                Add money to your wallet using a debit/credit card
+                ⚠️ DEMO ONLY - This is a placeholder feature. No actual payment processing occurs.
               </CardDescription>
             </CardHeader>
             <CardContent>

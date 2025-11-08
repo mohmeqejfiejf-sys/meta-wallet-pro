@@ -8,6 +8,17 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import logo from "@/assets/meta-wallet-logo.png";
+import { z } from "zod";
+
+const authSchema = z.object({
+  email: z.string().email("Invalid email format").max(255, "Email too long"),
+  password: z.string()
+    .min(8, "Password must be at least 8 characters")
+    .max(128, "Password too long")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[0-9]/, "Password must contain at least one number"),
+  fullName: z.string().min(2, "Name too short").max(100, "Name too long").trim(),
+});
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -40,8 +51,18 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
+      // Validate email and password format
+      const validation = authSchema.pick({ email: true, password: true }).safeParse({ 
+        email, 
+        password 
+      });
+
+      if (!validation.success) {
+        throw new Error(validation.error.errors[0].message);
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
-        email,
+        email: email.trim(),
         password,
       });
 
@@ -67,12 +88,23 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
+      // Validate all fields
+      const validation = authSchema.safeParse({ 
+        email, 
+        password, 
+        fullName 
+      });
+
+      if (!validation.success) {
+        throw new Error(validation.error.errors[0].message);
+      }
+
       const { error } = await supabase.auth.signUp({
-        email,
+        email: email.trim(),
         password,
         options: {
           data: {
-            full_name: fullName,
+            full_name: fullName.trim(),
           },
           emailRedirectTo: `${window.location.origin}/dashboard`,
         },
