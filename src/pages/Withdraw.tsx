@@ -13,13 +13,9 @@ import { Wallet, Loader2 } from "lucide-react";
 const Withdraw = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [amount, setAmount] = useState("");
   const [balance, setBalance] = useState(0);
-  const [cardNumber, setCardNumber] = useState("");
-  const [cardName, setCardName] = useState("");
-  const [expiryDate, setExpiryDate] = useState("");
-  const [cvv, setCvv] = useState("");
 
   useEffect(() => {
     const checkUser = async () => {
@@ -38,13 +34,22 @@ const Withdraw = () => {
       if (walletData) {
         setBalance(parseFloat(walletData.balance.toString()));
       }
+      
+      setIsLoading(false);
     };
     checkUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) {
+        navigate("/auth");
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, [navigate]);
 
   const handleWithdraw = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
 
     const withdrawAmount = parseFloat(amount);
     
@@ -54,20 +59,26 @@ const Withdraw = () => {
         description: "You don't have enough funds to withdraw this amount.",
         variant: "destructive",
       });
-      setIsLoading(false);
       return;
     }
 
-    // Simulate withdrawal processing
-    setTimeout(() => {
-      toast({
-        title: "Withdrawal initiated",
-        description: "Your withdrawal is being processed and will arrive in 1-2 business days.",
-      });
-      setIsLoading(false);
-      navigate("/dashboard");
-    }, 2000);
+    toast({
+      title: "Demo Feature",
+      description: "This is a placeholder. Real withdrawals would be processed through a secure payment provider.",
+    });
+    navigate("/dashboard");
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-8 flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin" />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -79,7 +90,7 @@ const Withdraw = () => {
             <CardHeader>
               <CardTitle className="text-2xl">Withdraw Funds</CardTitle>
               <CardDescription>
-                ⚠️ DEMO ONLY - This is a placeholder feature. No actual withdrawal processing occurs.
+                ⚠️ DEMO ONLY - This is a placeholder feature. Real withdrawals would integrate with a secure payment provider.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -87,7 +98,6 @@ const Withdraw = () => {
                 <p className="text-sm text-muted-foreground">Available Balance</p>
                 <p className="text-3xl font-bold">${balance.toFixed(2)}</p>
               </div>
-
 
               <form onSubmit={handleWithdraw} className="space-y-4">
                 <div className="space-y-2">
@@ -103,90 +113,14 @@ const Withdraw = () => {
                     onChange={(e) => setAmount(e.target.value)}
                     required
                   />
+                  <p className="text-sm text-muted-foreground">
+                    Maximum: ${balance.toFixed(2)}
+                  </p>
                 </div>
 
-                <div className="space-y-4 pt-4 border-t">
-                  <h3 className="font-medium flex items-center gap-2">
-                    <Wallet className="w-4 h-4" />
-                    Card Details
-                  </h3>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="card-name">Cardholder Name</Label>
-                    <Input
-                      id="card-name"
-                      type="text"
-                      placeholder="JOHN DOE"
-                      value={cardName}
-                      onChange={(e) => setCardName(e.target.value.toUpperCase())}
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="card-number">Card Number</Label>
-                    <Input
-                      id="card-number"
-                      type="text"
-                      placeholder="1234 5678 9012 3456"
-                      value={cardNumber}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/\D/g, '');
-                        const formatted = value.replace(/(\d{4})/g, '$1 ').trim();
-                        setCardNumber(formatted);
-                      }}
-                      maxLength={19}
-                      required
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="expiry">Expiry Date</Label>
-                      <Input
-                        id="expiry"
-                        type="text"
-                        placeholder="MM/YY"
-                        value={expiryDate}
-                        onChange={(e) => {
-                          const value = e.target.value.replace(/\D/g, '');
-                          if (value.length <= 2) {
-                            setExpiryDate(value);
-                          } else {
-                            setExpiryDate(value.slice(0, 2) + '/' + value.slice(2, 4));
-                          }
-                        }}
-                        maxLength={5}
-                        required
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="cvv">CVV</Label>
-                      <Input
-                        id="cvv"
-                        type="text"
-                        placeholder="123"
-                        value={cvv}
-                        onChange={(e) => setCvv(e.target.value.replace(/\D/g, ''))}
-                        maxLength={3}
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      Withdraw ${amount || '0.00'}
-                    </>
-                  )}
+                <Button type="submit" className="w-full">
+                  <Wallet className="w-4 h-4 mr-2" />
+                  Continue to Withdrawal (Demo)
                 </Button>
               </form>
             </CardContent>

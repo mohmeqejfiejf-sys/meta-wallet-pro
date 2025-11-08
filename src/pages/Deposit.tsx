@@ -12,62 +12,49 @@ import { CreditCard, Loader2 } from "lucide-react";
 const Deposit = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [amount, setAmount] = useState("");
-  const [cardNumber, setCardNumber] = useState("");
-  const [expiryDate, setExpiryDate] = useState("");
-  const [cvv, setCvv] = useState("");
-  const [cardName, setCardName] = useState("");
 
   useEffect(() => {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         navigate("/auth");
+        return;
       }
+      setIsLoading(false);
     };
     checkUser();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) {
+        navigate("/auth");
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, [navigate]);
 
   const handleDeposit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-
-    // Simulate deposit processing
-    setTimeout(() => {
-      toast({
-        title: "Deposit initiated",
-        description: "Your deposit is being processed and will be available shortly.",
-      });
-      setIsLoading(false);
-      navigate("/dashboard");
-    }, 2000);
-  };
-
-  const formatCardNumber = (value: string) => {
-    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-    const matches = v.match(/\d{4,16}/g);
-    const match = (matches && matches[0]) || '';
-    const parts = [];
     
-    for (let i = 0, len = match.length; i < len; i += 4) {
-      parts.push(match.substring(i, i + 4));
-    }
-    
-    if (parts.length) {
-      return parts.join(' ');
-    } else {
-      return value;
-    }
+    toast({
+      title: "Demo Feature",
+      description: "This is a placeholder. Real payment processing would be implemented here with a secure payment provider.",
+    });
+    navigate("/dashboard");
   };
 
-  const formatExpiry = (value: string) => {
-    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-    if (v.length >= 2) {
-      return v.slice(0, 2) + '/' + v.slice(2, 4);
-    }
-    return v;
-  };
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <main className="container mx-auto px-4 py-8 flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin" />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -79,11 +66,10 @@ const Deposit = () => {
             <CardHeader>
               <CardTitle className="text-2xl">Deposit Funds</CardTitle>
               <CardDescription>
-                ⚠️ DEMO ONLY - This is a placeholder feature. No actual payment processing occurs.
+                ⚠️ DEMO ONLY - This is a placeholder feature. Real deposits would integrate with a secure payment provider like Stripe.
               </CardDescription>
             </CardHeader>
             <CardContent>
-
               <form onSubmit={handleDeposit} className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="deposit-amount">Amount (USD)</Label>
@@ -92,80 +78,20 @@ const Deposit = () => {
                     type="number"
                     step="0.01"
                     min="1"
+                    max="10000"
                     placeholder="0.00"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     required
                   />
+                  <p className="text-sm text-muted-foreground">
+                    Enter an amount between $1 and $10,000
+                  </p>
                 </div>
 
-                <div className="space-y-4 pt-4 border-t">
-                  <h3 className="font-medium">Card Information</h3>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="card-name">Cardholder Name</Label>
-                    <Input
-                      id="card-name"
-                      type="text"
-                      placeholder="John Doe"
-                      value={cardName}
-                      onChange={(e) => setCardName(e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="card-number">Card Number</Label>
-                    <Input
-                      id="card-number"
-                      type="text"
-                      placeholder="1234 5678 9012 3456"
-                      value={cardNumber}
-                      onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
-                      maxLength={19}
-                      required
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="expiry">Expiry Date</Label>
-                      <Input
-                        id="expiry"
-                        type="text"
-                        placeholder="MM/YY"
-                        value={expiryDate}
-                        onChange={(e) => setExpiryDate(formatExpiry(e.target.value))}
-                        maxLength={5}
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="cvv">CVV</Label>
-                      <Input
-                        id="cvv"
-                        type="text"
-                        placeholder="123"
-                        value={cvv}
-                        onChange={(e) => setCvv(e.target.value.replace(/\D/g, ''))}
-                        maxLength={4}
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      Deposit ${amount || '0.00'}
-                    </>
-                  )}
+                <Button type="submit" className="w-full">
+                  <CreditCard className="w-4 h-4 mr-2" />
+                  Continue to Payment (Demo)
                 </Button>
               </form>
             </CardContent>
