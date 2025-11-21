@@ -1,1 +1,13 @@
 project_id = "wesvztbjszfssnboatqy"
+
+[auth]
+enable_signup = true
+enable_confirmations = true
+
+[auth.hook.send_email]
+enabled = true
+uri = "https://wesvztbjszfssnboatqy.supabase.co/functions/v1/send-otp-email"
+secrets = "RESEND_API_KEY"
+
+[functions.send-otp-email]
+verify_jwt = false
