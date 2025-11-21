@@ -113,9 +113,12 @@ const Auth = () => {
       if (error) throw error;
 
       toast({
-        title: "Account created!",
-        description: "Welcome to Meta Wallet. You can now sign in.",
+        title: "تم إنشاء الحساب!",
+        description: "يرجى التحقق من بريدك الإلكتروني وإدخال رمز التحقق.",
       });
+      
+      // Navigate to verification page
+      navigate(`/verify-email?email=${encodeURIComponent(email.trim())}`);
     } catch (error: any) {
       toast({
         title: "Error creating account",
