@@ -13,6 +13,7 @@ import Deposit from "./pages/Deposit";
 import Withdraw from "./pages/Withdraw";
 import WithdrawalRequests from "./pages/WithdrawalRequests";
 import AdminWithdrawals from "./pages/AdminWithdrawals";
+import AdminActivations from "./pages/AdminActivations";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/withdraw" element={<Withdraw />} />
           <Route path="/withdrawal-requests" element={<WithdrawalRequests />} />
           <Route path="/admin/withdrawals" element={<AdminWithdrawals />} />
+          <Route path="/admin/activations" element={<AdminActivations />} />
           <Route path="/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
