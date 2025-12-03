@@ -20,7 +20,7 @@ const Settings = () => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [activationRequested, setActivationRequested] = useState(false);
+  const [activationStatus, setActivationStatus] = useState<string | null>(null);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -40,6 +40,17 @@ const Settings = () => {
       
       if (profile) {
         setFullName(profile.full_name || "");
+      }
+
+      // Fetch activation request status
+      const { data: activationData } = await supabase
+        .from('activation_requests')
+        .select('status')
+        .eq('user_id', session.user.id)
+        .maybeSingle();
+      
+      if (activationData) {
+        setActivationStatus(activationData.status);
       }
     };
     
@@ -272,7 +283,7 @@ const Settings = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {!activationRequested ? (
+              {!activationStatus ? (
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <p className="text-sm font-medium">طلب تفعيل الحساب</p>
@@ -281,17 +292,53 @@ const Settings = () => {
                     </p>
                   </div>
                   <Switch
-                    checked={activationRequested}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        setActivationRequested(true);
-                        toast({
-                          title: "تم إرسال الطلب",
-                          description: "سيتم مراجعة حسابك قريباً",
-                        });
+                    checked={false}
+                    onCheckedChange={async (checked) => {
+                      if (checked && user) {
+                        const { error } = await supabase
+                          .from('activation_requests')
+                          .insert({ user_id: user.id });
+                        
+                        if (error) {
+                          toast({
+                            title: "خطأ",
+                            description: "حدث خطأ أثناء إرسال الطلب",
+                            variant: "destructive",
+                          });
+                        } else {
+                          setActivationStatus('pending');
+                          toast({
+                            title: "تم إرسال الطلب",
+                            description: "سيتم مراجعة حسابك قريباً",
+                          });
+                        }
                       }
                     }}
                   />
+                </div>
+              ) : activationStatus === 'approved' ? (
+                <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
+                  <div className="flex items-start gap-3">
+                    <ShieldCheck className="w-5 h-5 text-green-500 mt-0.5" />
+                    <div className="space-y-1">
+                      <p className="font-medium text-green-500">تم تفعيل حسابك</p>
+                      <p className="text-sm text-muted-foreground">
+                        حسابك مفعل ويمكنك الاستفادة من جميع المميزات
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ) : activationStatus === 'rejected' ? (
+                <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
+                  <div className="flex items-start gap-3">
+                    <ShieldCheck className="w-5 h-5 text-destructive mt-0.5" />
+                    <div className="space-y-1">
+                      <p className="font-medium text-destructive">تم رفض الطلب</p>
+                      <p className="text-sm text-muted-foreground">
+                        تم رفض طلب تفعيل حسابك. يرجى التواصل مع الدعم
+                      </p>
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
