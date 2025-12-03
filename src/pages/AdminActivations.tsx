@@ -108,6 +108,9 @@ const AdminActivations = () => {
   const handleStatusChange = async (requestId: string, newStatus: string) => {
     const { data: { session } } = await supabase.auth.getSession();
     
+    // Find the request to get user info
+    const request = requests.find(r => r.id === requestId);
+    
     const { error } = await supabase
       .from('activation_requests')
       .update({ 
@@ -125,6 +128,22 @@ const AdminActivations = () => {
         variant: "destructive",
       });
     } else {
+      // Send email notification if approved or rejected
+      if ((newStatus === 'approved' || newStatus === 'rejected') && request?.profiles?.email) {
+        try {
+          await supabase.functions.invoke('send-activation-email', {
+            body: {
+              email: request.profiles.email,
+              fullName: request.profiles.full_name,
+              status: newStatus
+            }
+          });
+          console.log('Activation email sent successfully');
+        } catch (emailError) {
+          console.error('Failed to send activation email:', emailError);
+        }
+      }
+      
       toast({
         title: "تم التحديث",
         description: "تم تحديث حالة الطلب بنجاح",
