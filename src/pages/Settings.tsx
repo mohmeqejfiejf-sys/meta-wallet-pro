@@ -8,7 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Lock, User as UserIcon } from "lucide-react";
+import { Loader2, Lock, User as UserIcon, ShieldCheck, Clock } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ const Settings = () => {
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [activationRequested, setActivationRequested] = useState(false);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -255,6 +257,55 @@ const Settings = () => {
                   تغيير كلمة المرور
                 </Button>
               </form>
+            </CardContent>
+          </Card>
+
+          {/* Account Activation */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5" />
+                تفعيل الحساب
+              </CardTitle>
+              <CardDescription>
+                قم بتفعيل حسابك للحصول على جميع المميزات
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {!activationRequested ? (
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium">طلب تفعيل الحساب</p>
+                    <p className="text-xs text-muted-foreground">
+                      سيتم مراجعة حسابك من قبل فريق الدعم
+                    </p>
+                  </div>
+                  <Switch
+                    checked={activationRequested}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        setActivationRequested(true);
+                        toast({
+                          title: "تم إرسال الطلب",
+                          description: "سيتم مراجعة حسابك قريباً",
+                        });
+                      }
+                    }}
+                  />
+                </div>
+              ) : (
+                <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
+                  <div className="flex items-start gap-3">
+                    <Clock className="w-5 h-5 text-primary mt-0.5" />
+                    <div className="space-y-1">
+                      <p className="font-medium text-primary">جاري مراجعة حسابك</p>
+                      <p className="text-sm text-muted-foreground">
+                        قد تأخذ المدة من أسبوعين إلى 5 أسابيع كحد أقصى
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
