@@ -9,6 +9,7 @@ import Auth from "./pages/Auth";
 import VerifyEmail from "./pages/VerifyEmail";
 import Dashboard from "./pages/Dashboard";
 import Transfer from "./pages/Transfer";
+import AdminUsers from "./pages/AdminUsers";
 import Deposit from "./pages/Deposit";
 import Withdraw from "./pages/Withdraw";
 import WithdrawalRequests from "./pages/WithdrawalRequests";
@@ -36,6 +37,7 @@ const App = () => (
           <Route path="/withdrawal-requests" element={<WithdrawalRequests />} />
           <Route path="/admin/withdrawals" element={<AdminWithdrawals />} />
           <Route path="/admin/activations" element={<AdminActivations />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
