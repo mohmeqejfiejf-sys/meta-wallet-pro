@@ -63,7 +63,19 @@ serve(async (req) => {
         timestamp: new Date().toISOString()
       });
       
-      // Return generic error to client
+      // Check for specific error messages from database function
+      if (error.message.includes('restricted from making transfers')) {
+        throw new Error('ACCOUNT_RESTRICTED');
+      } else if (error.message.includes('Recipient account is restricted')) {
+        throw new Error('RECIPIENT_RESTRICTED');
+      } else if (error.message.includes('Insufficient balance')) {
+        throw new Error('INSUFFICIENT_BALANCE');
+      } else if (error.message.includes('Cannot transfer to yourself')) {
+        throw new Error('SELF_TRANSFER');
+      } else if (error.message.includes('Recipient not found')) {
+        throw new Error('RECIPIENT_NOT_FOUND');
+      }
+      
       throw new Error('TRANSFER_FAILED');
     }
 
@@ -100,6 +112,21 @@ serve(async (req) => {
     } else if (error.message === 'AUTH_REQUIRED' || error.message === 'AUTH_INVALID') {
       userMessage = 'Authentication required. Please sign in again.';
       statusCode = 401;
+    } else if (error.message === 'ACCOUNT_RESTRICTED') {
+      userMessage = 'Your account is restricted from making transfers. Please contact support.';
+      statusCode = 403;
+    } else if (error.message === 'RECIPIENT_RESTRICTED') {
+      userMessage = 'The recipient account is restricted from receiving transfers.';
+      statusCode = 400;
+    } else if (error.message === 'INSUFFICIENT_BALANCE') {
+      userMessage = 'Insufficient balance to complete this transfer.';
+      statusCode = 400;
+    } else if (error.message === 'SELF_TRANSFER') {
+      userMessage = 'You cannot transfer funds to yourself.';
+      statusCode = 400;
+    } else if (error.message === 'RECIPIENT_NOT_FOUND') {
+      userMessage = 'Recipient email not found. Please verify the email address.';
+      statusCode = 400;
     }
     
     return new Response(
