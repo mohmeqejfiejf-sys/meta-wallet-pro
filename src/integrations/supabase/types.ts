@@ -140,6 +140,7 @@ export type Database = {
           created_at: string | null
           currency: string
           id: string
+          transfer_disabled: boolean
           updated_at: string | null
           user_id: string
         }
@@ -148,6 +149,7 @@ export type Database = {
           created_at?: string | null
           currency?: string
           id?: string
+          transfer_disabled?: boolean
           updated_at?: string | null
           user_id: string
         }
@@ -156,6 +158,7 @@ export type Database = {
           created_at?: string | null
           currency?: string
           id?: string
+          transfer_disabled?: boolean
           updated_at?: string | null
           user_id?: string
         }
@@ -213,6 +216,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_adjust_balance: {
+        Args: {
+          adjustment_description?: string
+          amount_change: number
+          target_user_id: string
+        }
+        Returns: Json
+      }
+      admin_toggle_transfer: {
+        Args: { disabled: boolean; target_user_id: string }
+        Returns: Json
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
