@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import Navbar from "@/components/Navbar";
+import AdminSidebar from "@/components/admin/AdminSidebar";
 import { Loader2, ShieldCheck, Shield, User } from "lucide-react";
 import {
   Select,
@@ -193,17 +194,22 @@ const AdminActivations = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       
-      <main className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="mb-6 flex items-center gap-2">
-            <Shield className="w-8 h-8 text-primary" />
-            <div>
-              <h1 className="text-3xl font-bold">طلبات تفعيل الحسابات</h1>
-              <p className="text-muted-foreground mt-2">
-                مراجعة والموافقة على طلبات تفعيل الحسابات
-              </p>
+      <div className="flex">
+        <AdminSidebar />
+        
+        <main className="flex-1 p-6 overflow-auto">
+          <div className="max-w-4xl mx-auto">
+            <div className="mb-6 flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                <Shield className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold">طلبات تفعيل الحسابات</h1>
+                <p className="text-muted-foreground">
+                  مراجعة والموافقة على طلبات تفعيل الحسابات
+                </p>
+              </div>
             </div>
-          </div>
 
           {requests.length === 0 ? (
             <Card>
@@ -262,8 +268,9 @@ const AdminActivations = () => {
               ))}
             </div>
           )}
-        </div>
-      </main>
+          </div>
+        </main>
+      </div>
     </div>
   );
 };

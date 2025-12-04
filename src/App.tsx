@@ -10,6 +10,11 @@ import VerifyEmail from "./pages/VerifyEmail";
 import Dashboard from "./pages/Dashboard";
 import Transfer from "./pages/Transfer";
 import AdminUsers from "./pages/AdminUsers";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminTransactions from "./pages/AdminTransactions";
+import AdminActivity from "./pages/AdminActivity";
+import AdminNotifications from "./pages/AdminNotifications";
+import AdminSettings from "./pages/AdminSettings";
 import Deposit from "./pages/Deposit";
 import Withdraw from "./pages/Withdraw";
 import WithdrawalRequests from "./pages/WithdrawalRequests";
@@ -35,9 +40,14 @@ const App = () => (
           <Route path="/deposit" element={<Deposit />} />
           <Route path="/withdraw" element={<Withdraw />} />
           <Route path="/withdrawal-requests" element={<WithdrawalRequests />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/transactions" element={<AdminTransactions />} />
           <Route path="/admin/withdrawals" element={<AdminWithdrawals />} />
           <Route path="/admin/activations" element={<AdminActivations />} />
-          <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/activity" element={<AdminActivity />} />
+          <Route path="/admin/notifications" element={<AdminNotifications />} />
+          <Route path="/admin/settings" element={<AdminSettings />} />
           <Route path="/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
