@@ -6,7 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import Navbar from "@/components/Navbar";
-import { Loader2, CreditCard, Shield } from "lucide-react";
+import AdminSidebar from "@/components/admin/AdminSidebar";
+import { Loader2, CreditCard, Shield, Wallet } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -172,17 +173,22 @@ const AdminWithdrawals = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       
-      <main className="container mx-auto px-4 py-8">
-        <div className="max-w-6xl mx-auto">
-          <div className="mb-6 flex items-center gap-2">
-            <Shield className="w-8 h-8 text-primary" />
-            <div>
-              <h1 className="text-3xl font-bold">لوحة تحكم المسؤول</h1>
-              <p className="text-muted-foreground mt-2">
-                جميع طلبات السحب من كل المستخدمين
-              </p>
+      <div className="flex">
+        <AdminSidebar />
+        
+        <main className="flex-1 p-6 overflow-auto">
+          <div className="max-w-6xl mx-auto">
+            <div className="mb-6 flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center">
+                <Wallet className="w-6 h-6 text-primary" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold">طلبات السحب</h1>
+                <p className="text-muted-foreground">
+                  جميع طلبات السحب من كل المستخدمين
+                </p>
+              </div>
             </div>
-          </div>
 
           {requests.length === 0 ? (
             <Card>
@@ -263,8 +269,9 @@ const AdminWithdrawals = () => {
               ))}
             </div>
           )}
-        </div>
-      </main>
+          </div>
+        </main>
+      </div>
     </div>
   );
 };
