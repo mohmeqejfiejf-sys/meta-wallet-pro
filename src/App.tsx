@@ -15,12 +15,17 @@ import AdminTransactions from "./pages/AdminTransactions";
 import AdminActivity from "./pages/AdminActivity";
 import AdminNotifications from "./pages/AdminNotifications";
 import AdminSettings from "./pages/AdminSettings";
+import AdminReports from "./pages/AdminReports";
+import AdminVerification from "./pages/AdminVerification";
+import AdminLogs from "./pages/AdminLogs";
 import Deposit from "./pages/Deposit";
 import Withdraw from "./pages/Withdraw";
 import WithdrawalRequests from "./pages/WithdrawalRequests";
 import AdminWithdrawals from "./pages/AdminWithdrawals";
 import AdminActivations from "./pages/AdminActivations";
 import Settings from "./pages/Settings";
+import EditProfile from "./pages/EditProfile";
+import PublicProfile from "./pages/PublicProfile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,15 +45,21 @@ const App = () => (
           <Route path="/deposit" element={<Deposit />} />
           <Route path="/withdraw" element={<Withdraw />} />
           <Route path="/withdrawal-requests" element={<WithdrawalRequests />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/edit-profile" element={<EditProfile />} />
+          <Route path="/profile" element={<PublicProfile />} />
+          <Route path="/profile/:username" element={<PublicProfile />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/transactions" element={<AdminTransactions />} />
           <Route path="/admin/withdrawals" element={<AdminWithdrawals />} />
           <Route path="/admin/activations" element={<AdminActivations />} />
+          <Route path="/admin/verification" element={<AdminVerification />} />
+          <Route path="/admin/reports" element={<AdminReports />} />
+          <Route path="/admin/logs" element={<AdminLogs />} />
           <Route path="/admin/activity" element={<AdminActivity />} />
           <Route path="/admin/notifications" element={<AdminNotifications />} />
           <Route path="/admin/settings" element={<AdminSettings />} />
-          <Route path="/settings" element={<Settings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
