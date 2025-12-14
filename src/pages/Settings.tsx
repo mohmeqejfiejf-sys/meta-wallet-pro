@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import Navbar from "@/components/Navbar";
 import { User } from "@supabase/supabase-js";
@@ -8,8 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Lock, User as UserIcon, ShieldCheck, Clock } from "lucide-react";
+import { Loader2, Lock, User as UserIcon, ShieldCheck, Clock, Edit, ExternalLink } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -21,6 +23,7 @@ const Settings = () => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [activationStatus, setActivationStatus] = useState<string | null>(null);
+  const [profile, setProfile] = useState<any>(null);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -32,14 +35,15 @@ const Settings = () => {
       setUser(session.user);
       
       // Fetch user profile
-      const { data: profile } = await supabase
+      const { data: profileData } = await supabase
         .from('profiles')
-        .select('full_name')
+        .select('*')
         .eq('id', session.user.id)
         .single();
       
-      if (profile) {
-        setFullName(profile.full_name || "");
+      if (profileData) {
+        setFullName(profileData.full_name || "");
+        setProfile(profileData);
       }
 
       // Fetch activation request status
@@ -171,7 +175,61 @@ const Settings = () => {
         <h1 className="text-3xl font-bold mb-8">الإعدادات</h1>
         
         <div className="space-y-6">
-          {/* Profile Settings */}
+          {/* Profile Card */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="flex items-center gap-2">
+                  <UserIcon className="w-5 h-5" />
+                  الملف الشخصي
+                </CardTitle>
+                <Button variant="outline" size="sm" asChild>
+                  <Link to="/edit-profile">
+                    <Edit className="w-4 h-4 ml-2" />
+                    تعديل الملف
+                  </Link>
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-4">
+                <Avatar className="w-16 h-16">
+                  <AvatarImage src={profile?.avatar_url || undefined} />
+                  <AvatarFallback className="text-xl bg-primary/10">
+                    {profile?.full_name?.charAt(0) || user?.email?.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-semibold text-lg">{profile?.full_name || 'بدون اسم'}</h3>
+                    {profile?.is_verified && (
+                      <ShieldCheck className="w-5 h-5 text-green-500" />
+                    )}
+                  </div>
+                  {profile?.username && (
+                    <p className="text-muted-foreground">@{profile.username}</p>
+                  )}
+                  <p className="text-sm text-muted-foreground">{user?.email}</p>
+                </div>
+              </div>
+              
+              {profile?.is_public && profile?.username && (
+                <div className="mt-4 p-3 rounded-lg bg-primary/5 border border-primary/20">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">ملفك الشخصي العام:</span>
+                    <Button variant="ghost" size="sm" asChild>
+                      <Link to={`/profile/${profile.username}`}>
+                        <ExternalLink className="w-4 h-4 ml-1" />
+                        عرض
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Account Info */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">

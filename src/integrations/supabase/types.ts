@@ -44,24 +44,111 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_logs: {
+        Row: {
+          action: string
+          admin_id: string
+          created_at: string
+          details: Json | null
+          id: string
+          ip_address: string | null
+          target_user_id: string | null
+        }
+        Insert: {
+          action: string
+          admin_id: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          target_user_id?: string | null
+        }
+        Update: {
+          action?: string
+          admin_id?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: string | null
+          target_user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
+          avatar_url: string | null
+          bio: string | null
+          country: string | null
           created_at: string | null
+          date_of_birth: string | null
           email: string
           full_name: string | null
           id: string
+          is_public: boolean | null
+          is_verified: boolean | null
+          phone: string | null
+          updated_at: string | null
+          username: string | null
         }
         Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          country?: string | null
           created_at?: string | null
+          date_of_birth?: string | null
           email: string
           full_name?: string | null
           id: string
+          is_public?: boolean | null
+          is_verified?: boolean | null
+          phone?: string | null
+          updated_at?: string | null
+          username?: string | null
         }
         Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          country?: string | null
           created_at?: string | null
+          date_of_birth?: string | null
           email?: string
           full_name?: string | null
           id?: string
+          is_public?: boolean | null
+          is_verified?: boolean | null
+          phone?: string | null
+          updated_at?: string | null
+          username?: string | null
+        }
+        Relationships: []
+      }
+      system_notifications: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean | null
+          message: string
+          title: string
+          type: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          message: string
+          title: string
+          type?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          title?: string
+          type?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
