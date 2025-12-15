@@ -122,6 +122,39 @@ export type Database = {
         }
         Relationships: []
       }
+      support_messages: {
+        Row: {
+          admin_id: string | null
+          created_at: string
+          id: string
+          is_from_admin: boolean | null
+          is_read: boolean | null
+          language: string | null
+          message: string
+          user_id: string
+        }
+        Insert: {
+          admin_id?: string | null
+          created_at?: string
+          id?: string
+          is_from_admin?: boolean | null
+          is_read?: boolean | null
+          language?: string | null
+          message: string
+          user_id: string
+        }
+        Update: {
+          admin_id?: string | null
+          created_at?: string
+          id?: string
+          is_from_admin?: boolean | null
+          is_read?: boolean | null
+          language?: string | null
+          message?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       system_notifications: {
         Row: {
           created_at: string
