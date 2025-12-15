@@ -18,6 +18,7 @@ import AdminSettings from "./pages/AdminSettings";
 import AdminReports from "./pages/AdminReports";
 import AdminVerification from "./pages/AdminVerification";
 import AdminLogs from "./pages/AdminLogs";
+import AdminSupport from "./pages/AdminSupport";
 import Deposit from "./pages/Deposit";
 import Withdraw from "./pages/Withdraw";
 import WithdrawalRequests from "./pages/WithdrawalRequests";
@@ -27,6 +28,7 @@ import Settings from "./pages/Settings";
 import EditProfile from "./pages/EditProfile";
 import PublicProfile from "./pages/PublicProfile";
 import NotFound from "./pages/NotFound";
+import { SupportChat } from "./components/SupportChat";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +57,7 @@ const App = () => (
           <Route path="/admin/withdrawals" element={<AdminWithdrawals />} />
           <Route path="/admin/activations" element={<AdminActivations />} />
           <Route path="/admin/verification" element={<AdminVerification />} />
+          <Route path="/admin/support" element={<AdminSupport />} />
           <Route path="/admin/reports" element={<AdminReports />} />
           <Route path="/admin/logs" element={<AdminLogs />} />
           <Route path="/admin/activity" element={<AdminActivity />} />
@@ -63,6 +66,7 @@ const App = () => (
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <SupportChat />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
