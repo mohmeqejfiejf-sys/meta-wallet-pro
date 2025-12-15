@@ -17,6 +17,8 @@ import {
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
+import { MessageCircle } from "lucide-react";
+
 const menuItems = [
   { icon: LayoutDashboard, label: "لوحة التحكم", path: "/admin" },
   { icon: Users, label: "المستخدمين", path: "/admin/users" },
@@ -24,6 +26,7 @@ const menuItems = [
   { icon: Wallet, label: "طلبات السحب", path: "/admin/withdrawals" },
   { icon: ShieldCheck, label: "طلبات التفعيل", path: "/admin/activations" },
   { icon: ShieldCheck, label: "التوثيق", path: "/admin/verification" },
+  { icon: MessageCircle, label: "الدعم الفني", path: "/admin/support" },
   { icon: BarChart3, label: "التقارير", path: "/admin/reports" },
   { icon: Activity, label: "النشاط", path: "/admin/activity" },
   { icon: FileText, label: "السجلات", path: "/admin/logs" },
