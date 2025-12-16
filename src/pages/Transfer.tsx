@@ -7,8 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import Navbar from "@/components/Navbar";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { ArrowRight, Loader2, Send, Wallet, User } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { FadeIn, ScaleIn, StaggerContainer, StaggerItem } from "@/components/PageTransition";
 
 const Transfer = () => {
   const navigate = useNavigate();
@@ -27,7 +28,6 @@ const Transfer = () => {
         return;
       }
       
-      // Fetch current balance
       const { data: walletData } = await supabase
         .from('wallets')
         .select('balance')
@@ -77,7 +77,6 @@ const Transfer = () => {
         description: `Successfully sent $${transferAmount.toFixed(2)} to ${recipientEmail}`,
       });
 
-      // Refresh balance
       const { data: walletData } = await supabase
         .from('wallets')
         .select('balance')
@@ -88,7 +87,6 @@ const Transfer = () => {
         setBalance(parseFloat(walletData.balance.toString()));
       }
 
-      // Reset form
       setRecipientEmail("");
       setAmount("");
       setDescription("");
@@ -106,82 +104,122 @@ const Transfer = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen animated-bg noise-overlay relative">
+      {/* Background Orbs */}
+      <div className="orb w-[400px] h-[400px] bg-primary/10 top-20 -right-48 fixed" />
+      <div className="orb w-[300px] h-[300px] bg-secondary/10 bottom-20 -left-32 fixed" style={{ animationDelay: '-3s' }} />
+      
       <Navbar />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 relative z-10">
         <div className="max-w-2xl mx-auto">
-          <Card className="border-border">
-            <CardHeader>
-              <CardTitle className="text-2xl">Send Money</CardTitle>
-              <CardDescription>
-                Transfer funds to another Meta Wallet user
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="mb-6 p-4 rounded-xl bg-card border border-border">
-                <p className="text-sm text-muted-foreground">Available Balance</p>
-                <p className="text-3xl font-bold">${balance.toFixed(2)}</p>
+          <FadeIn>
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                <Send className="w-7 h-7 text-primary" />
               </div>
+              <div>
+                <h1 className="font-display text-3xl font-bold">Send Money</h1>
+                <p className="text-muted-foreground">Transfer funds to another user</p>
+              </div>
+            </div>
+          </FadeIn>
 
-              <form onSubmit={handleTransfer} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="recipient">Recipient Email</Label>
-                  <Input
-                    id="recipient"
-                    type="email"
-                    placeholder="recipient@email.com"
-                    value={recipientEmail}
-                    onChange={(e) => setRecipientEmail(e.target.value)}
-                    required
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Enter the email address of the recipient
-                  </p>
+          <StaggerContainer className="space-y-6">
+            {/* Balance Card */}
+            <StaggerItem>
+              <div className="glass-card gradient-border p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-success/10 flex items-center justify-center">
+                      <Wallet className="w-6 h-6 text-success" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground">Available Balance</p>
+                      <p className="font-display text-3xl font-bold gradient-text">${balance.toFixed(2)}</p>
+                    </div>
+                  </div>
                 </div>
+              </div>
+            </StaggerItem>
 
-                <div className="space-y-2">
-                  <Label htmlFor="amount">Amount (USD)</Label>
-                  <Input
-                    id="amount"
-                    type="number"
-                    step="0.01"
-                    min="0.01"
-                    max={balance}
-                    placeholder="0.00"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    required
-                  />
-                </div>
+            {/* Transfer Form */}
+            <StaggerItem>
+              <Card className="glass-card border-border/50">
+                <CardContent className="p-6">
+                  <form onSubmit={handleTransfer} className="space-y-5">
+                    <div className="space-y-2">
+                      <Label htmlFor="recipient" className="text-sm font-medium">Recipient Email</Label>
+                      <div className="relative">
+                        <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                        <Input
+                          id="recipient"
+                          type="email"
+                          placeholder="recipient@email.com"
+                          value={recipientEmail}
+                          onChange={(e) => setRecipientEmail(e.target.value)}
+                          required
+                          className="pl-11"
+                        />
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Enter the email address of the recipient
+                      </p>
+                    </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="description">Description (Optional)</Label>
-                  <Textarea
-                    id="description"
-                    placeholder="What's this transfer for?"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    rows={3}
-                  />
-                </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="amount" className="text-sm font-medium">Amount (USD)</Label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">$</span>
+                        <Input
+                          id="amount"
+                          type="number"
+                          step="0.01"
+                          min="0.01"
+                          max={balance}
+                          placeholder="0.00"
+                          value={amount}
+                          onChange={(e) => setAmount(e.target.value)}
+                          required
+                          className="pl-8"
+                        />
+                      </div>
+                    </div>
 
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      Send Money
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </>
-                  )}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+                    <div className="space-y-2">
+                      <Label htmlFor="description" className="text-sm font-medium">Description (Optional)</Label>
+                      <Textarea
+                        id="description"
+                        placeholder="What's this transfer for?"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        rows={3}
+                        className="resize-none bg-input/50 border-border/50 rounded-xl focus:border-primary/50"
+                      />
+                    </div>
+
+                    <Button 
+                      type="submit" 
+                      className="w-full h-12 btn-glow rounded-xl font-semibold" 
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <span className="flex items-center gap-2">
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                          Processing...
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-2">
+                          Send Money
+                          <ArrowRight className="w-5 h-5" />
+                        </span>
+                      )}
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
+            </StaggerItem>
+          </StaggerContainer>
         </div>
       </main>
     </div>
