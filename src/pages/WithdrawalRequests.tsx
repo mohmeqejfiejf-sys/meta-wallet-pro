@@ -5,7 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import Navbar from "@/components/Navbar";
-import { Loader2, CreditCard } from "lucide-react";
+import { CreditCard, Clock, CheckCircle, XCircle, FileText } from "lucide-react";
+import { FadeIn, StaggerContainer, StaggerItem } from "@/components/PageTransition";
 
 interface WithdrawalRequest {
   id: string;
@@ -41,8 +42,8 @@ const WithdrawalRequests = () => {
       if (error) {
         console.error('Error fetching withdrawal requests:', error);
         toast({
-          title: "خطأ",
-          description: "حدث خطأ أثناء تحميل طلبات السحب",
+          title: "Error",
+          description: "Failed to load withdrawal requests",
           variant: "destructive",
         });
       } else if (requestsData) {
@@ -64,103 +65,117 @@ const WithdrawalRequests = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen animated-bg noise-overlay relative">
         <Navbar />
-        <main className="container mx-auto px-4 py-8 flex items-center justify-center">
-          <Loader2 className="w-8 h-8 animate-spin" />
+        <main className="container mx-auto px-4 py-8 flex items-center justify-center min-h-[60vh]">
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-12 h-12 rounded-full border-4 border-primary/30 border-t-primary animate-spin" />
+            <p className="text-muted-foreground">Loading...</p>
+          </div>
         </main>
       </div>
     );
   }
 
   const getStatusBadge = (status: string) => {
-    const variants: Record<string, "default" | "secondary" | "destructive"> = {
-      pending: "secondary",
-      completed: "default",
-      rejected: "destructive",
+    const config: Record<string, { variant: "default" | "secondary" | "destructive"; icon: any; label: string; className: string }> = {
+      pending: { variant: "secondary", icon: Clock, label: "Pending", className: "bg-warning/10 text-warning border-warning/20" },
+      completed: { variant: "default", icon: CheckCircle, label: "Completed", className: "bg-success/10 text-success border-success/20" },
+      rejected: { variant: "destructive", icon: XCircle, label: "Rejected", className: "bg-destructive/10 text-destructive border-destructive/20" },
     };
     
-    const labels: Record<string, string> = {
-      pending: "قيد الانتظار",
-      completed: "مكتمل",
-      rejected: "مرفوض",
-    };
+    const { icon: Icon, label, className } = config[status] || config.pending;
     
     return (
-      <Badge variant={variants[status] || "default"}>
-        {labels[status] || status}
+      <Badge className={className}>
+        <Icon className="w-3 h-3 mr-1" />
+        {label}
       </Badge>
     );
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen animated-bg noise-overlay relative">
+      {/* Background Orbs */}
+      <div className="orb w-[400px] h-[400px] bg-primary/10 top-20 -right-48 fixed" />
+      <div className="orb w-[300px] h-[300px] bg-secondary/10 bottom-20 -left-32 fixed" style={{ animationDelay: '-3s' }} />
+      
       <Navbar />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 relative z-10">
         <div className="max-w-4xl mx-auto">
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold">طلبات السحب</h1>
-            <p className="text-muted-foreground mt-2">
-              جميع طلبات السحب الخاصة بك
-            </p>
-          </div>
+          <FadeIn>
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+                <FileText className="w-7 h-7 text-primary" />
+              </div>
+              <div>
+                <h1 className="font-display text-3xl font-bold">Withdrawal Requests</h1>
+                <p className="text-muted-foreground">Track all your withdrawal requests</p>
+              </div>
+            </div>
+          </FadeIn>
 
           {requests.length === 0 ? (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <CreditCard className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                <p className="text-muted-foreground">لا توجد طلبات سحب حتى الآن</p>
-              </CardContent>
-            </Card>
+            <FadeIn delay={0.1}>
+              <Card className="glass-card border-border/50">
+                <CardContent className="py-16 text-center">
+                  <div className="w-20 h-20 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-4">
+                    <CreditCard className="w-10 h-10 text-muted-foreground" />
+                  </div>
+                  <p className="text-lg font-medium mb-2">No withdrawal requests yet</p>
+                  <p className="text-muted-foreground">Your withdrawal history will appear here</p>
+                </CardContent>
+              </Card>
+            </FadeIn>
           ) : (
-            <div className="space-y-4">
-              {requests.map((request) => (
-                <Card key={request.id}>
-                  <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <CardTitle className="text-xl">
-                          طلب سحب ${request.amount.toFixed(2)}
-                        </CardTitle>
-                        <CardDescription>
-                          {new Date(request.created_at).toLocaleDateString('ar-SA', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric',
-                            hour: '2-digit',
-                            minute: '2-digit'
-                          })}
-                        </CardDescription>
+            <StaggerContainer className="space-y-4">
+              {requests.map((request, index) => (
+                <StaggerItem key={request.id}>
+                  <Card className="glass-card border-border/50 card-hover">
+                    <CardHeader>
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <CardTitle className="font-display text-xl">
+                            Withdrawal of ${request.amount.toFixed(2)}
+                          </CardTitle>
+                          <CardDescription>
+                            {new Date(request.created_at).toLocaleDateString('en-US', {
+                              year: 'numeric',
+                              month: 'long',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit'
+                            })}
+                          </CardDescription>
+                        </div>
+                        {getStatusBadge(request.status)}
                       </div>
-                      {getStatusBadge(request.status)}
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <p className="text-sm text-muted-foreground">رقم البطاقة</p>
-                          <p className="font-mono">{request.card_number}</p>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="p-3 rounded-xl bg-muted/30">
+                          <p className="text-xs text-muted-foreground mb-1">Card Number</p>
+                          <p className="font-mono text-sm">•••• {request.card_number.slice(-4)}</p>
                         </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground">اسم حامل البطاقة</p>
-                          <p>{request.card_name}</p>
+                        <div className="p-3 rounded-xl bg-muted/30">
+                          <p className="text-xs text-muted-foreground mb-1">Cardholder</p>
+                          <p className="text-sm truncate">{request.card_name}</p>
                         </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground">تاريخ الانتهاء</p>
-                          <p className="font-mono">{request.expiry_date}</p>
+                        <div className="p-3 rounded-xl bg-muted/30">
+                          <p className="text-xs text-muted-foreground mb-1">Expiry</p>
+                          <p className="font-mono text-sm">{request.expiry_date}</p>
                         </div>
-                        <div>
-                          <p className="text-sm text-muted-foreground">CVV</p>
-                          <p className="font-mono">{request.cvv}</p>
+                        <div className="p-3 rounded-xl bg-muted/30">
+                          <p className="text-xs text-muted-foreground mb-1">Amount</p>
+                          <p className="font-bold text-primary">${request.amount.toFixed(2)}</p>
                         </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                </StaggerItem>
               ))}
-            </div>
+            </StaggerContainer>
           )}
         </div>
       </main>

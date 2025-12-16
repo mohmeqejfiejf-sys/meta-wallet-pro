@@ -8,10 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Lock, User as UserIcon, ShieldCheck, Clock, Edit, ExternalLink } from "lucide-react";
+import { Loader2, Lock, User as UserIcon, ShieldCheck, Clock, Edit, ExternalLink, Settings as SettingsIcon, Key } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { FadeIn, StaggerContainer, StaggerItem } from "@/components/PageTransition";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -34,7 +34,6 @@ const Settings = () => {
       }
       setUser(session.user);
       
-      // Fetch user profile
       const { data: profileData } = await supabase
         .from('profiles')
         .select('*')
@@ -46,7 +45,6 @@ const Settings = () => {
         setProfile(profileData);
       }
 
-      // Fetch activation request status
       const { data: activationData } = await supabase
         .from('activation_requests')
         .select('status')
@@ -84,12 +82,12 @@ const Settings = () => {
       if (error) throw error;
 
       toast({
-        title: "تم التحديث",
-        description: "تم تحديث معلومات الحساب بنجاح",
+        title: "Updated",
+        description: "Account information updated successfully",
       });
     } catch (error: any) {
       toast({
-        title: "خطأ",
+        title: "Error",
         description: error.message,
         variant: "destructive",
       });
@@ -103,8 +101,8 @@ const Settings = () => {
     
     if (!currentPassword) {
       toast({
-        title: "خطأ",
-        description: "يرجى إدخال كلمة المرور الحالية",
+        title: "Error",
+        description: "Please enter your current password",
         variant: "destructive",
       });
       return;
@@ -112,8 +110,8 @@ const Settings = () => {
     
     if (newPassword !== confirmPassword) {
       toast({
-        title: "خطأ",
-        description: "كلمات المرور غير متطابقة",
+        title: "Error",
+        description: "Passwords do not match",
         variant: "destructive",
       });
       return;
@@ -121,8 +119,8 @@ const Settings = () => {
 
     if (newPassword.length < 6) {
       toast({
-        title: "خطأ",
-        description: "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+        title: "Error",
+        description: "Password must be at least 6 characters",
         variant: "destructive",
       });
       return;
@@ -131,17 +129,15 @@ const Settings = () => {
     setLoading(true);
 
     try {
-      // First verify current password
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email: user?.email || "",
         password: currentPassword,
       });
 
       if (signInError) {
-        throw new Error("كلمة المرور الحالية غير صحيحة");
+        throw new Error("Current password is incorrect");
       }
 
-      // If verification successful, update password
       const { error } = await supabase.auth.updateUser({
         password: newPassword
       });
@@ -149,8 +145,8 @@ const Settings = () => {
       if (error) throw error;
 
       toast({
-        title: "تم التحديث",
-        description: "تم تغيير كلمة المرور بنجاح",
+        title: "Updated",
+        description: "Password changed successfully",
       });
       
       setCurrentPassword("");
@@ -158,7 +154,7 @@ const Settings = () => {
       setConfirmPassword("");
     } catch (error: any) {
       toast({
-        title: "خطأ",
+        title: "Error",
         description: error.message,
         variant: "destructive",
       });
@@ -168,252 +164,286 @@ const Settings = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen animated-bg noise-overlay relative">
+      {/* Background Orbs */}
+      <div className="orb w-[400px] h-[400px] bg-primary/10 top-20 -right-48 fixed" />
+      <div className="orb w-[300px] h-[300px] bg-secondary/10 bottom-20 -left-32 fixed" style={{ animationDelay: '-3s' }} />
+      
       <Navbar />
       
-      <main className="container mx-auto px-4 py-8 max-w-2xl">
-        <h1 className="text-3xl font-bold mb-8">الإعدادات</h1>
+      <main className="container mx-auto px-4 py-8 max-w-2xl relative z-10">
+        <FadeIn>
+          <div className="flex items-center gap-4 mb-8">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+              <SettingsIcon className="w-7 h-7 text-primary" />
+            </div>
+            <div>
+              <h1 className="font-display text-3xl font-bold">Settings</h1>
+              <p className="text-muted-foreground">Manage your account preferences</p>
+            </div>
+          </div>
+        </FadeIn>
         
-        <div className="space-y-6">
+        <StaggerContainer className="space-y-6">
           {/* Profile Card */}
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
-                  <UserIcon className="w-5 h-5" />
-                  الملف الشخصي
-                </CardTitle>
-                <Button variant="outline" size="sm" asChild>
-                  <Link to="/edit-profile">
-                    <Edit className="w-4 h-4 ml-2" />
-                    تعديل الملف
-                  </Link>
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-4">
-                <Avatar className="w-16 h-16">
-                  <AvatarImage src={profile?.avatar_url || undefined} />
-                  <AvatarFallback className="text-xl bg-primary/10">
-                    {profile?.full_name?.charAt(0) || user?.email?.charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-semibold text-lg">{profile?.full_name || 'بدون اسم'}</h3>
-                    {profile?.is_verified && (
-                      <ShieldCheck className="w-5 h-5 text-green-500" />
+          <StaggerItem>
+            <Card className="glass-card border-border/50">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2 font-display">
+                    <UserIcon className="w-5 h-5 text-primary" />
+                    Profile
+                  </CardTitle>
+                  <Button variant="outline" size="sm" asChild className="rounded-xl">
+                    <Link to="/edit-profile">
+                      <Edit className="w-4 h-4 mr-2" />
+                      Edit Profile
+                    </Link>
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center gap-4">
+                  <Avatar className="w-16 h-16 ring-2 ring-primary/20">
+                    <AvatarImage src={profile?.avatar_url || undefined} />
+                    <AvatarFallback className="text-xl bg-gradient-to-br from-primary/20 to-secondary/20">
+                      {profile?.full_name?.charAt(0) || user?.email?.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-semibold text-lg">{profile?.full_name || 'No name'}</h3>
+                      {profile?.is_verified && (
+                        <ShieldCheck className="w-5 h-5 text-success" />
+                      )}
+                    </div>
+                    {profile?.username && (
+                      <p className="text-muted-foreground">@{profile.username}</p>
                     )}
-                  </div>
-                  {profile?.username && (
-                    <p className="text-muted-foreground">@{profile.username}</p>
-                  )}
-                  <p className="text-sm text-muted-foreground">{user?.email}</p>
-                </div>
-              </div>
-              
-              {profile?.is_public && profile?.username && (
-                <div className="mt-4 p-3 rounded-lg bg-primary/5 border border-primary/20">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">ملفك الشخصي العام:</span>
-                    <Button variant="ghost" size="sm" asChild>
-                      <Link to={`/profile/${profile.username}`}>
-                        <ExternalLink className="w-4 h-4 ml-1" />
-                        عرض
-                      </Link>
-                    </Button>
+                    <p className="text-sm text-muted-foreground">{user?.email}</p>
                   </div>
                 </div>
-              )}
-            </CardContent>
-          </Card>
+                
+                {profile?.is_public && profile?.username && (
+                  <div className="mt-4 p-3 rounded-xl bg-primary/5 border border-primary/20">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Your public profile:</span>
+                      <Button variant="ghost" size="sm" asChild className="rounded-lg">
+                        <Link to={`/profile/${profile.username}`}>
+                          <ExternalLink className="w-4 h-4 mr-1" />
+                          View
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </StaggerItem>
 
           {/* Account Info */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <UserIcon className="w-5 h-5" />
-                معلومات الحساب
-              </CardTitle>
-              <CardDescription>
-                تحديث معلومات حسابك الشخصية
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleUpdateProfile} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="email">البريد الإلكتروني</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={user?.email || ""}
-                    disabled
-                    className="bg-muted"
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="fullName">الاسم الكامل</Label>
-                  <Input
-                    id="fullName"
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    placeholder="أدخل اسمك الكامل"
-                  />
-                </div>
-                
-                <Button type="submit" disabled={loading}>
-                  {loading && <Loader2 className="w-4 h-4 ml-2 animate-spin" />}
-                  حفظ التغييرات
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+          <StaggerItem>
+            <Card className="glass-card border-border/50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 font-display">
+                  <UserIcon className="w-5 h-5 text-primary" />
+                  Account Information
+                </CardTitle>
+                <CardDescription>
+                  Update your personal account information
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleUpdateProfile} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={user?.email || ""}
+                      disabled
+                      className="bg-muted/50"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="fullName">Full Name</Label>
+                    <Input
+                      id="fullName"
+                      type="text"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      placeholder="Enter your full name"
+                    />
+                  </div>
+                  
+                  <Button type="submit" disabled={loading} className="rounded-xl">
+                    {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                    Save Changes
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </StaggerItem>
 
           {/* Password Settings */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Lock className="w-5 h-5" />
-                تغيير كلمة المرور
-              </CardTitle>
-              <CardDescription>
-                تحديث كلمة مرور حسابك بشكل آمن
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleChangePassword} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="currentPassword">كلمة المرور الحالية</Label>
-                  <Input
-                    id="currentPassword"
-                    type="password"
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    placeholder="أدخل كلمة المرور الحالية"
-                    required
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="newPassword">كلمة المرور الجديدة</Label>
-                  <Input
-                    id="newPassword"
-                    type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    placeholder="أدخل كلمة المرور الجديدة"
-                    required
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="confirmPassword">تأكيد كلمة المرور</Label>
-                  <Input
-                    id="confirmPassword"
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    placeholder="أعد إدخال كلمة المرور"
-                    required
-                  />
-                </div>
-                
-                <Button type="submit" disabled={loading}>
-                  {loading && <Loader2 className="w-4 h-4 ml-2 animate-spin" />}
-                  تغيير كلمة المرور
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+          <StaggerItem>
+            <Card className="glass-card border-border/50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 font-display">
+                  <Key className="w-5 h-5 text-primary" />
+                  Change Password
+                </CardTitle>
+                <CardDescription>
+                  Update your account password securely
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleChangePassword} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="currentPassword">Current Password</Label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                      <Input
+                        id="currentPassword"
+                        type="password"
+                        value={currentPassword}
+                        onChange={(e) => setCurrentPassword(e.target.value)}
+                        placeholder="Enter current password"
+                        required
+                        className="pl-11"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="newPassword">New Password</Label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                      <Input
+                        id="newPassword"
+                        type="password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        placeholder="Enter new password"
+                        required
+                        className="pl-11"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="confirmPassword">Confirm Password</Label>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                      <Input
+                        id="confirmPassword"
+                        type="password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="Confirm new password"
+                        required
+                        className="pl-11"
+                      />
+                    </div>
+                  </div>
+                  
+                  <Button type="submit" disabled={loading} className="rounded-xl">
+                    {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                    Change Password
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </StaggerItem>
 
           {/* Account Activation */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5" />
-                تفعيل الحساب
-              </CardTitle>
-              <CardDescription>
-                قم بتفعيل حسابك للحصول على جميع المميزات
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {!activationStatus ? (
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium">طلب تفعيل الحساب</p>
-                    <p className="text-xs text-muted-foreground">
-                      سيتم مراجعة حسابك من قبل فريق الدعم
-                    </p>
-                  </div>
-                  <Switch
-                    checked={false}
-                    onCheckedChange={async (checked) => {
-                      if (checked && user) {
-                        const { error } = await supabase
-                          .from('activation_requests')
-                          .insert({ user_id: user.id });
-                        
-                        if (error) {
-                          toast({
-                            title: "خطأ",
-                            description: "حدث خطأ أثناء إرسال الطلب",
-                            variant: "destructive",
-                          });
-                        } else {
-                          setActivationStatus('pending');
-                          toast({
-                            title: "تم إرسال الطلب",
-                            description: "سيتم مراجعة حسابك قريباً",
-                          });
+          <StaggerItem>
+            <Card className="glass-card border-border/50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 font-display">
+                  <ShieldCheck className="w-5 h-5 text-primary" />
+                  Account Activation
+                </CardTitle>
+                <CardDescription>
+                  Activate your account to access all features
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {!activationStatus ? (
+                  <div className="flex items-center justify-between p-4 rounded-xl bg-muted/30">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">Request Account Activation</p>
+                      <p className="text-xs text-muted-foreground">
+                        Your account will be reviewed by our team
+                      </p>
+                    </div>
+                    <Switch
+                      checked={false}
+                      onCheckedChange={async (checked) => {
+                        if (checked && user) {
+                          const { error } = await supabase
+                            .from('activation_requests')
+                            .insert({ user_id: user.id });
+                          
+                          if (error) {
+                            toast({
+                              title: "Error",
+                              description: "An error occurred while sending the request",
+                              variant: "destructive",
+                            });
+                          } else {
+                            setActivationStatus('pending');
+                            toast({
+                              title: "Request Sent",
+                              description: "Your account will be reviewed soon",
+                            });
+                          }
                         }
-                      }
-                    }}
-                  />
-                </div>
-              ) : activationStatus === 'approved' ? (
-                <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
-                  <div className="flex items-start gap-3">
-                    <ShieldCheck className="w-5 h-5 text-green-500 mt-0.5" />
-                    <div className="space-y-1">
-                      <p className="font-medium text-green-500">تم تفعيل حسابك</p>
-                      <p className="text-sm text-muted-foreground">
-                        حسابك مفعل ويمكنك الاستفادة من جميع المميزات
-                      </p>
+                      }}
+                    />
+                  </div>
+                ) : activationStatus === 'approved' ? (
+                  <div className="bg-success/10 border border-success/20 rounded-xl p-4">
+                    <div className="flex items-start gap-3">
+                      <ShieldCheck className="w-5 h-5 text-success mt-0.5" />
+                      <div className="space-y-1">
+                        <p className="font-medium text-success">Account Activated</p>
+                        <p className="text-sm text-muted-foreground">
+                          Your account is active and you can access all features
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ) : activationStatus === 'rejected' ? (
-                <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
-                  <div className="flex items-start gap-3">
-                    <ShieldCheck className="w-5 h-5 text-destructive mt-0.5" />
-                    <div className="space-y-1">
-                      <p className="font-medium text-destructive">تم رفض الطلب</p>
-                      <p className="text-sm text-muted-foreground">
-                        تم رفض طلب تفعيل حسابك. يرجى التواصل مع الدعم
-                      </p>
+                ) : activationStatus === 'rejected' ? (
+                  <div className="bg-destructive/10 border border-destructive/20 rounded-xl p-4">
+                    <div className="flex items-start gap-3">
+                      <ShieldCheck className="w-5 h-5 text-destructive mt-0.5" />
+                      <div className="space-y-1">
+                        <p className="font-medium text-destructive">Request Rejected</p>
+                        <p className="text-sm text-muted-foreground">
+                          Your activation request was rejected. Please contact support
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ) : (
-                <div className="bg-primary/10 border border-primary/20 rounded-lg p-4">
-                  <div className="flex items-start gap-3">
-                    <Clock className="w-5 h-5 text-primary mt-0.5" />
-                    <div className="space-y-1">
-                      <p className="font-medium text-primary">جاري مراجعة حسابك</p>
-                      <p className="text-sm text-muted-foreground">
-                        قد تأخذ المدة من أسبوعين إلى 5 أسابيع كحد أقصى
-                      </p>
+                ) : (
+                  <div className="bg-primary/10 border border-primary/20 rounded-xl p-4">
+                    <div className="flex items-start gap-3">
+                      <Clock className="w-5 h-5 text-primary mt-0.5" />
+                      <div className="space-y-1">
+                        <p className="font-medium text-primary">Under Review</p>
+                        <p className="text-sm text-muted-foreground">
+                          This may take 2-5 weeks to complete
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+                )}
+              </CardContent>
+            </Card>
+          </StaggerItem>
+        </StaggerContainer>
       </main>
     </div>
   );
