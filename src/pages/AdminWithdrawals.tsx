@@ -7,14 +7,17 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import Navbar from "@/components/Navbar";
 import AdminSidebar from "@/components/admin/AdminSidebar";
-import { Loader2, CreditCard, Shield, Wallet } from "lucide-react";
+import { Loader2, CreditCard, Wallet, X, Check, AlertTriangle } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
 
 interface WithdrawalRequest {
   id: string;
@@ -26,6 +29,7 @@ interface WithdrawalRequest {
   status: string;
   created_at: string;
   user_id: string;
+  rejection_reason?: string | null;
   profiles?: {
     email: string;
     full_name: string | null;
@@ -38,6 +42,10 @@ const AdminWithdrawals = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [requests, setRequests] = useState<WithdrawalRequest[]>([]);
+  const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState<WithdrawalRequest | null>(null);
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     const checkAdminAndFetch = async () => {
@@ -111,27 +119,82 @@ const AdminWithdrawals = () => {
     return () => subscription.unsubscribe();
   }, [navigate, toast]);
 
-  const handleStatusChange = async (requestId: string, newStatus: string) => {
+  const handleApprove = async (request: WithdrawalRequest) => {
+    setIsUpdating(true);
     const { error } = await supabase
       .from('withdrawal_requests')
-      .update({ status: newStatus, updated_at: new Date().toISOString() })
-      .eq('id', requestId);
+      .update({ 
+        status: 'completed', 
+        updated_at: new Date().toISOString(),
+        rejection_reason: null 
+      })
+      .eq('id', request.id);
 
     if (error) {
       toast({
         title: "خطأ",
-        description: "حدث خطأ أثناء تحديث الحالة",
+        description: "حدث خطأ أثناء الموافقة على الطلب",
         variant: "destructive",
       });
     } else {
       toast({
-        title: "تم التحديث",
-        description: "تم تحديث حالة الطلب بنجاح",
+        title: "تمت الموافقة",
+        description: "تمت الموافقة على طلب السحب بنجاح",
       });
       setRequests(requests.map(req => 
-        req.id === requestId ? { ...req, status: newStatus } : req
+        req.id === request.id ? { ...req, status: 'completed', rejection_reason: null } : req
       ));
     }
+    setIsUpdating(false);
+  };
+
+  const openRejectDialog = (request: WithdrawalRequest) => {
+    setSelectedRequest(request);
+    setRejectionReason("");
+    setRejectDialogOpen(true);
+  };
+
+  const handleReject = async () => {
+    if (!selectedRequest) return;
+    
+    if (!rejectionReason.trim()) {
+      toast({
+        title: "خطأ",
+        description: "يرجى كتابة سبب الرفض",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsUpdating(true);
+    const { error } = await supabase
+      .from('withdrawal_requests')
+      .update({ 
+        status: 'rejected', 
+        updated_at: new Date().toISOString(),
+        rejection_reason: rejectionReason.trim()
+      })
+      .eq('id', selectedRequest.id);
+
+    if (error) {
+      toast({
+        title: "خطأ",
+        description: "حدث خطأ أثناء رفض الطلب",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "تم الرفض",
+        description: "تم رفض طلب السحب",
+      });
+      setRequests(requests.map(req => 
+        req.id === selectedRequest.id ? { ...req, status: 'rejected', rejection_reason: rejectionReason.trim() } : req
+      ));
+      setRejectDialogOpen(false);
+      setSelectedRequest(null);
+      setRejectionReason("");
+    }
+    setIsUpdating(false);
   };
 
   if (isLoading) {
@@ -200,12 +263,13 @@ const AdminWithdrawals = () => {
           ) : (
             <div className="space-y-4">
               {requests.map((request) => (
-                <Card key={request.id}>
-                  <CardHeader>
+                <Card key={request.id} className="overflow-hidden">
+                  <CardHeader className="pb-3">
                     <div className="flex justify-between items-start">
                       <div>
-                        <CardTitle className="text-xl">
+                        <CardTitle className="text-xl flex items-center gap-2">
                           طلب سحب ${request.amount.toFixed(2)}
+                          {getStatusBadge(request.status)}
                         </CardTitle>
                         <CardDescription className="mt-2">
                           <div className="space-y-1">
@@ -225,27 +289,35 @@ const AdminWithdrawals = () => {
                           </div>
                         </CardDescription>
                       </div>
-                      <div className="flex flex-col gap-2">
-                        {getStatusBadge(request.status)}
-                        <Select
-                          value={request.status}
-                          onValueChange={(value) => handleStatusChange(request.id, value)}
-                        >
-                          <SelectTrigger className="w-[140px]">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="pending">قيد الانتظار</SelectItem>
-                            <SelectItem value="completed">مكتمل</SelectItem>
-                            <SelectItem value="rejected">مرفوض</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
+                      
+                      {request.status === 'pending' && (
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            variant="default"
+                            className="bg-green-600 hover:bg-green-700"
+                            onClick={() => handleApprove(request)}
+                            disabled={isUpdating}
+                          >
+                            <Check className="w-4 h-4 mr-1" />
+                            موافقة
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => openRejectDialog(request)}
+                            disabled={isUpdating}
+                          >
+                            <X className="w-4 h-4 mr-1" />
+                            رفض
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-3">
-                      <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div>
                           <p className="text-sm text-muted-foreground">رقم البطاقة</p>
                           <p className="font-mono">{request.card_number}</p>
@@ -263,6 +335,18 @@ const AdminWithdrawals = () => {
                           <p className="font-mono">{request.cvv}</p>
                         </div>
                       </div>
+                      
+                      {request.status === 'rejected' && request.rejection_reason && (
+                        <div className="mt-4 p-3 rounded-lg bg-destructive/10 border border-destructive/20">
+                          <div className="flex items-start gap-2">
+                            <AlertTriangle className="w-5 h-5 text-destructive mt-0.5" />
+                            <div>
+                              <p className="font-medium text-destructive">سبب الرفض:</p>
+                              <p className="text-sm text-muted-foreground">{request.rejection_reason}</p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -272,6 +356,70 @@ const AdminWithdrawals = () => {
           </div>
         </main>
       </div>
+
+      {/* Reject Dialog */}
+      <Dialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-destructive" />
+              رفض طلب السحب
+            </DialogTitle>
+            <DialogDescription>
+              سيتم إبلاغ المستخدم بسبب الرفض
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="rejection-reason">سبب الرفض *</Label>
+              <Textarea
+                id="rejection-reason"
+                placeholder="اكتب سبب رفض طلب السحب..."
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+                rows={4}
+                className="resize-none"
+              />
+            </div>
+            
+            {selectedRequest && (
+              <div className="p-3 rounded-lg bg-muted/50">
+                <p className="text-sm text-muted-foreground">تفاصيل الطلب:</p>
+                <p className="font-medium">المبلغ: ${selectedRequest.amount.toFixed(2)}</p>
+                <p className="text-sm">المستخدم: {selectedRequest.profiles?.email}</p>
+              </div>
+            )}
+          </div>
+          
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setRejectDialogOpen(false)}
+              disabled={isUpdating}
+            >
+              إلغاء
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleReject}
+              disabled={isUpdating || !rejectionReason.trim()}
+            >
+              {isUpdating ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  جاري الرفض...
+                </>
+              ) : (
+                <>
+                  <X className="w-4 h-4 mr-1" />
+                  تأكيد الرفض
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
