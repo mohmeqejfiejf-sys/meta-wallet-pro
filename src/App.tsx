@@ -28,6 +28,7 @@ import Settings from "./pages/Settings";
 import EditProfile from "./pages/EditProfile";
 import PublicProfile from "./pages/PublicProfile";
 import NotFound from "./pages/NotFound";
+import ResetPassword from "./pages/ResetPassword";
 import { SupportChat } from "./components/SupportChat";
 
 const queryClient = new QueryClient();
@@ -42,6 +43,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/transfer" element={<Transfer />} />
           <Route path="/deposit" element={<Deposit />} />
