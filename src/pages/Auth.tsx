@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import logo from "@/assets/meta-wallet-logo-new.png";
+import logo from "@/assets/phantom-logo.png";
 import { z } from "zod";
 import { ArrowLeft, Mail, Lock, User, Sparkles, Eye, EyeOff, KeyRound, CheckCircle, ArrowRight } from "lucide-react";
 import { PageTransition } from "@/components/PageTransition";
@@ -190,10 +190,10 @@ const Auth = () => {
         {/* Logo & Header */}
         <div className="text-center mb-8 opacity-0 animate-fade-in">
           <div className="relative inline-block mb-6">
-            <img src={logo} alt="Meta Wallet" className="w-20 h-20 rounded-2xl mx-auto" />
+            <img src={logo} alt="Phantom" className="w-20 h-20 rounded-2xl mx-auto" />
             <div className="absolute inset-0 rounded-2xl bg-primary/30 blur-2xl" />
           </div>
-          <h1 className="font-display text-4xl font-bold gradient-text mb-2">MetaWallet</h1>
+          <h1 className="font-display text-4xl font-bold gradient-text mb-2">Phantom</h1>
           <p className="text-muted-foreground">Secure digital payments platform</p>
         </div>
 

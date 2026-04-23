@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import logo from "@/assets/meta-wallet-logo-new.png";
+import logo from "@/assets/phantom-logo.png";
 import { z } from "zod";
 import { ArrowLeft, Lock, Eye, EyeOff, KeyRound, CheckCircle } from "lucide-react";
 import { PageTransition } from "@/components/PageTransition";
@@ -165,7 +165,7 @@ const ResetPassword = () => {
           {/* Logo & Header */}
           <div className="text-center mb-8">
             <div className="relative inline-block mb-6">
-              <img src={logo} alt="Meta Wallet" className="w-20 h-20 rounded-2xl mx-auto" />
+              <img src={logo} alt="Phantom" className="w-20 h-20 rounded-2xl mx-auto" />
               <div className="absolute inset-0 rounded-2xl bg-primary/30 blur-2xl" />
             </div>
             <h1 className="font-display text-4xl font-bold gradient-text mb-2">
