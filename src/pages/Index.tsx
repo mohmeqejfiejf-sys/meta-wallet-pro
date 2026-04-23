@@ -102,6 +102,19 @@ const Index = () => {
             </button>
           </div>
 
+          {/* Feature video showcase */}
+          <div className="relative rounded-[2rem] overflow-hidden mb-8 hero-dark aspect-video">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover"
+            >
+              <source src="/videos/trading.mp4" type="video/mp4" />
+            </video>
+          </div>
+
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
             {[
               { title: "Buy & Sell", desc: "Buy and sell all types of crypto in an instant.", color: "from-purple-300 to-purple-400" },
@@ -133,6 +146,18 @@ const Index = () => {
             </button>
           </div>
 
+          <div className="relative rounded-[2rem] overflow-hidden mb-8 hero-dark aspect-video">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover"
+            >
+              <source src="/videos/money.mp4" type="video/mp4" />
+            </video>
+          </div>
+
           <div className="grid md:grid-cols-3 gap-5">
             {[
               { title: "All your money", desc: "One home for all of your money." },
@@ -160,6 +185,18 @@ const Index = () => {
             <button className="text-primary font-semibold text-lg flex items-center gap-2 hover:gap-3 transition-all">
               See more <ArrowRight className="w-5 h-5" />
             </button>
+          </div>
+
+          <div className="relative rounded-[2rem] overflow-hidden mb-8 hero-dark aspect-video">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover"
+            >
+              <source src="/videos/security.mp4" type="video/mp4" />
+            </video>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
