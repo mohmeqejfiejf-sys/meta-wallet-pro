@@ -67,6 +67,7 @@ const Index = () => {
             loop
             muted
             playsInline
+            preload="auto"
             className="absolute inset-0 w-full h-full object-cover opacity-60"
           >
             <source src="/videos/hero.mp4" type="video/mp4" />
@@ -109,7 +110,8 @@ const Index = () => {
               loop
               muted
               playsInline
-              className="w-full h-full object-cover"
+              preload="auto"
+              className="absolute inset-0 w-full h-full object-contain"
             >
               <source src="/videos/trading.mp4" type="video/mp4" />
             </video>
@@ -152,7 +154,8 @@ const Index = () => {
               loop
               muted
               playsInline
-              className="w-full h-full object-cover"
+              preload="auto"
+              className="absolute inset-0 w-full h-full object-contain"
             >
               <source src="/videos/money.mp4" type="video/mp4" />
             </video>
@@ -193,7 +196,8 @@ const Index = () => {
               loop
               muted
               playsInline
-              className="w-full h-full object-cover"
+              preload="auto"
+              className="absolute inset-0 w-full h-full object-contain"
             >
               <source src="/videos/security.mp4" type="video/mp4" />
             </video>
