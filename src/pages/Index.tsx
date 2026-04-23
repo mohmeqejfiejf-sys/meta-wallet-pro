@@ -52,7 +52,7 @@ const Index = () => {
               onClick={() => navigate("/auth")}
               className="btn-glow rounded-full px-6 py-2 font-semibold text-base"
             >
-              Download
+              Sign in
             </Button>
           </div>
         </div>
@@ -67,6 +67,7 @@ const Index = () => {
             loop
             muted
             playsInline
+            preload="auto"
             className="absolute inset-0 w-full h-full object-cover opacity-60"
           >
             <source src="/videos/hero.mp4" type="video/mp4" />
@@ -86,7 +87,7 @@ const Index = () => {
               style={{ animationDelay: '0.3s' }}
             >
               <Smartphone className="w-5 h-5 mr-2" />
-              Download Phantom
+              Sign in to Phantom
             </Button>
           </div>
         </div>
@@ -109,7 +110,8 @@ const Index = () => {
               loop
               muted
               playsInline
-              className="w-full h-full object-cover"
+              preload="auto"
+              className="absolute inset-0 w-full h-full object-contain"
             >
               <source src="/videos/trading.mp4" type="video/mp4" />
             </video>
@@ -152,7 +154,8 @@ const Index = () => {
               loop
               muted
               playsInline
-              className="w-full h-full object-cover"
+              preload="auto"
+              className="absolute inset-0 w-full h-full object-contain"
             >
               <source src="/videos/money.mp4" type="video/mp4" />
             </video>
@@ -193,7 +196,8 @@ const Index = () => {
               loop
               muted
               playsInline
-              className="w-full h-full object-cover"
+              preload="auto"
+              className="absolute inset-0 w-full h-full object-contain"
             >
               <source src="/videos/security.mp4" type="video/mp4" />
             </video>
@@ -233,7 +237,7 @@ const Index = () => {
               className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-full px-8 py-6 text-base font-semibold"
             >
               <Smartphone className="w-5 h-5 mr-2" />
-              Download Phantom
+              Sign in to Phantom
             </Button>
           </div>
         </section>
@@ -244,7 +248,7 @@ const Index = () => {
             <img src={logo} alt="Phantom" className="w-6 h-6" width={24} height={24} />
             <span className="font-bold text-foreground">phantom</span>
           </div>
-          <p>© 2025 Phantom. All rights reserved.</p>
+          <p>© 2026 Phantom. All rights reserved.</p>
         </footer>
       </main>
     </div>
