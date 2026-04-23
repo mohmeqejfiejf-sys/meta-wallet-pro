@@ -61,18 +61,17 @@ const Index = () => {
       {/* Hero Section - Dark Card */}
       <main className="container mx-auto px-4 py-8">
         <div className="hero-dark rounded-[2.5rem] relative overflow-hidden min-h-[600px] flex items-center justify-center px-6 py-24">
-          {/* Floating coin orbs (decorative) */}
-          <div className="absolute top-10 left-10 w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 opacity-80 float" style={{ animationDelay: '0s' }} />
-          <div className="absolute top-32 right-20 w-20 h-20 rounded-full bg-gradient-to-br from-pink-400 to-red-500 opacity-80 float" style={{ animationDelay: '-2s' }} />
-          <div className="absolute bottom-20 left-24 w-24 h-24 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 opacity-80 float" style={{ animationDelay: '-1s' }} />
-          <div className="absolute bottom-32 right-32 w-14 h-14 rounded-full bg-gradient-to-br from-blue-400 to-cyan-500 opacity-80 float" style={{ animationDelay: '-3s' }} />
-          <div className="absolute top-1/2 left-1/4 w-12 h-12 rounded-full bg-gradient-to-br from-purple-400 to-pink-500 opacity-70 float" style={{ animationDelay: '-4s' }} />
-          <div className="absolute top-20 right-1/3 w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-yellow-500 opacity-70 float" style={{ animationDelay: '-5s' }} />
-
-          {/* Center decorative circle */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="w-[500px] h-[500px] rounded-full border border-white/5" />
-          </div>
+          {/* Background video */}
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover opacity-60"
+          >
+            <source src="/videos/hero.mp4" type="video/mp4" />
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60" />
 
           <div className="relative z-10 text-center max-w-4xl">
             <p className="text-white/70 text-base md:text-lg mb-6 animate-fade-in">
@@ -101,6 +100,19 @@ const Index = () => {
             <button className="text-primary font-semibold text-lg flex items-center gap-2 hover:gap-3 transition-all">
               See more <ArrowRight className="w-5 h-5" />
             </button>
+          </div>
+
+          {/* Feature video showcase */}
+          <div className="relative rounded-[2rem] overflow-hidden mb-8 hero-dark aspect-video">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover"
+            >
+              <source src="/videos/trading.mp4" type="video/mp4" />
+            </video>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -134,6 +146,18 @@ const Index = () => {
             </button>
           </div>
 
+          <div className="relative rounded-[2rem] overflow-hidden mb-8 hero-dark aspect-video">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover"
+            >
+              <source src="/videos/money.mp4" type="video/mp4" />
+            </video>
+          </div>
+
           <div className="grid md:grid-cols-3 gap-5">
             {[
               { title: "All your money", desc: "One home for all of your money." },
@@ -161,6 +185,18 @@ const Index = () => {
             <button className="text-primary font-semibold text-lg flex items-center gap-2 hover:gap-3 transition-all">
               See more <ArrowRight className="w-5 h-5" />
             </button>
+          </div>
+
+          <div className="relative rounded-[2rem] overflow-hidden mb-8 hero-dark aspect-video">
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover"
+            >
+              <source src="/videos/security.mp4" type="video/mp4" />
+            </video>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
