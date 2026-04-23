@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
-import logo from "@/assets/meta-wallet-logo-new.png";
+import logo from "@/assets/phantom-logo.png";
 import { ArrowLeft, Mail, RefreshCw, Sparkles } from "lucide-react";
 import { FadeIn, ScaleIn } from "@/components/PageTransition";
 
@@ -56,7 +56,7 @@ const VerifyEmail = () => {
 
       toast({
         title: "Verification successful!",
-        description: "Welcome to MetaWallet",
+        description: "Welcome to Phantom",
       });
 
       navigate("/dashboard");
@@ -121,7 +121,7 @@ const VerifyEmail = () => {
         {/* Logo & Header */}
         <FadeIn className="text-center mb-8">
           <div className="relative inline-block mb-6">
-            <img src={logo} alt="Meta Wallet" className="w-20 h-20 rounded-2xl mx-auto" />
+            <img src={logo} alt="Phantom" className="w-20 h-20 rounded-2xl mx-auto" />
             <div className="absolute inset-0 rounded-2xl bg-primary/30 blur-2xl" />
           </div>
           <h1 className="font-display text-3xl font-bold gradient-text mb-2">Verify Your Email</h1>

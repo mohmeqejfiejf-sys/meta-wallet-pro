@@ -240,7 +240,7 @@ const PublicProfile = () => {
               <div className="pt-4 border-t border-border/50">
                 <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
                   <Globe className="w-4 h-4" />
-                  <span>Public profile on MetaWallet</span>
+                  <span>Public profile on Phantom</span>
                 </div>
               </div>
             </CardContent>

@@ -216,7 +216,7 @@ const AdminDashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-3xl font-bold">لوحة التحكم</h1>
-                <p className="text-muted-foreground mt-1">مرحباً بك في لوحة إدارة MetaWallet</p>
+                <p className="text-muted-foreground mt-1">مرحباً بك في لوحة إدارة Phantom</p>
               </div>
               <Badge variant="outline" className="px-4 py-2">
                 <Activity className="w-4 h-4 ml-2" />

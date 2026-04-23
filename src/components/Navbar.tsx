@@ -2,7 +2,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import logo from "@/assets/meta-wallet-logo-new.png";
+import logo from "@/assets/phantom-logo.png";
 import { LogOut, LayoutDashboard, Send, Download, Upload, Settings, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -43,10 +43,10 @@ const Navbar = () => {
             onClick={() => navigate("/dashboard")}
           >
             <div className="relative">
-              <img src={logo} alt="Meta Wallet" className="w-10 h-10 rounded-xl transition-transform group-hover:scale-105" />
-              <div className="absolute inset-0 rounded-xl bg-primary/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity" />
+            <img src={logo} alt="Phantom" className="w-9 h-9 transition-transform group-hover:scale-105" />
+              <div className="absolute inset-0 rounded-full bg-primary/20 blur-lg opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
-            <span className="font-display font-bold text-xl gradient-text hidden sm:block">MetaWallet</span>
+            <span className="font-bold text-xl text-foreground hidden sm:block">phantom</span>
           </div>
           
           {/* Desktop Navigation */}
